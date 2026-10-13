@@ -3,7 +3,7 @@ import {UI,CONTENT} from './content.js';
 import {CloudPage} from './CloudPage.jsx';
 import {backendReady,readCredentials,cloudState,queueChange,syncPending} from './cloud-api.js';
 
-const V='2.4.0';
+const V='2.4.1';
 const SITE_URL='https://b110212000.github.io/lovebird-guide/';
 const MAIN=['home','guide','growth','journal','settings'];
 const HELP={
