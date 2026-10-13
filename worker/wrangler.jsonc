@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "banana-care-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-13",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "APP_URL": "https://b110212000.github.io/lovebird-guide/#journal",
+    "VAPID_SUBJECT": "https://b110212000.github.io"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BIRD_ACCOUNT",
+        "class_name": "BirdAccount"
+      },
+      {
+        "name": "PUSH_SERVICE",
+        "class_name": "PushService"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "BirdAccount",
+        "PushService"
+      ]
+    }
+  ]
+}

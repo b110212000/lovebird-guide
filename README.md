@@ -33,3 +33,8 @@ npm run build
 ## 注意
 
 未断奶幼鸟需要鸟类兽医指导；每日两次勾选表示检查、补充主食，不代表限制鸟一天只能吃两次。
+
+
+## v2.4.0 — 個人養鳥雲端後端（待 Cloudflare 部署）
+
+已新增 `worker/` 獨立 Cloudflare Workers + Durable Objects 後端，帳戶高熵金鑰驗證、每人獨立餵食紀錄、早晚 Alarm 與 Web Push；React 設定中新增「雲端同步與通知」。**尚未部署 Worker 前，預設停用雲端並保留全部本機功能**。完整部署與安全說明見 [`worker/README.md`](./worker/README.md)。

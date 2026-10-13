@@ -1,0 +1,15 @@
+/* Banana cloud account panel — v2.4.0 */
+.cloud-page .info-card{padding:18px;display:grid;gap:12px}
+.cloud-page .info-card h3{margin:0;font-size:20px}
+.cloud-page .info-card p{margin:0;font-size:15px;line-height:1.7}
+.cloud-page .info-card small{font-size:13px;color:#819183;word-break:break-word}
+.cloud-page .info-card .wide-button{margin-top:5px}
+.cloud-page .note-input{font-size:15px;min-height:90px}
+.cloud-warning{border-color:#efdfb8;background:#fff9e8}
+.cloud-warning h3{color:#9d7632}
+.cloud-connected{border-color:#d3e9d4;background:#f6fdf5}
+.cloud-history-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #eaf0e8}
+.cloud-history-row:last-child{border-bottom:0}
+.cloud-history-row span{font-size:15px;color:#6d816e}.cloud-history-row strong{font-size:16px;color:#417d4d}
+.cloud-disconnect{min-height:48px;border:1px solid #ebd1c9;border-radius:13px;color:#a7524b;background:#fff9f7;font-weight:750}
+.cloud-error{border:1px solid #efd0c5;border-radius:12px;color:#a44e46;background:#fff8f5;padding:12px 14px;font-size:15px;overflow-wrap:anywhere}
