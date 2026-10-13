@@ -77,3 +77,13 @@ npm run build
 - iPhone 主畫面 Web App 返回前景或裝置語言更新時會重新偵測，在 auto 模式下自動切換介面。不支援的裝置語言暫以繁體中文呈現（現階段尚未提供英文、日文翻譯）。
 - 雲端帳戶的推播文案也同步使用目前選定的簡／繁中文（單帳戶目前只儲存一個 Web Push 訂閱，最後啟用裝置的語言設定會生效）。
 - 附 Node.js 單元測試，GitHub Actions 先測試語言對照與手動覆蓋，再編譯 PWA。
+
+## 開發流程：Issue-first（自 2026-10-13 起）
+
+**每次程式、UI、後端、設定或文件的修改，必須先建立 GitHub Issue，再開始動手。** 規則由 [Issue #1](https://github.com/b110212000/lovebird-guide/issues/1) 開始執行。
+
+1. **先建 Issue**：一件工作建立一個 Issue，寫明需求／問題、影響範圍和驗收條件；開始前先查詢避免重複。獨立的問題另開 Issue，同一工作內的修正則可續用原 Issue。
+2. **再修改並追蹤**：相關 Commit 訊息須包含 `#IssueNumber`；遵循既有版號規則（新增功能次版 +1、純 UI 或修錯補丁版 +1，主版僅在明確要求時調整）。文件或開發流程的小幅異動可不升 App 版本，但仍需 Issue。
+3. **最後驗證及回報**：依修改範圍檢查測試、React GitHub Actions、GitHub Pages 和 Cloudflare Workers Builds；在 Issue 記錄版本、Commit、部署與實機測試狀態。尚未完成必要驗證的 Issue 保持開啟，完成後才關閉。
+
+**禁止直接修改而不建立 Issue。** 此規則適用未來所有對本專案的改動。
