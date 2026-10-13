@@ -12,8 +12,8 @@ React PWA (GitHub Pages)
         ▼
     banana-care-api (獨立 Cloudflare Worker)
         ├─ BirdAccount Durable Object（每個 accountId 一個）
-        │    ├─ 自己的小鳥名稱、IANA 時區、兩次提醒時間
-        │    ├─ 自己的早晚餵食完成紀錄（最多查 90 筆）
+        │    ├─ 自己的小鳥名稱、IANA 時區、自訂多餐提醒時間
+        │    ├─ 自己的逐餐餵食完成紀錄（最多查 90 筆）
         │    ├─ 自己的 Web Push 訂閱與每天發送去重
         │    └─ Durable Object Alarm（僅排下次提醒，不用 1 分鐘輪詢）
         └─ PushService Durable Object（全域 VAPID 金鑰）
@@ -93,7 +93,7 @@ Cloudflare Worker 使用 SQLite-backed Durable Objects，依照 MLB 現行的 `w
 | GET | `/api/push/public-key` | VAPID 公鑰 |
 | POST | `/api/accounts` | 建立帳戶，回傳 accountId、accessKey（僅這次顯示） |
 | GET | `/api/state?date=YYYY-MM-DD` | 自己的小鳥資料與當日餵食 |
-| PATCH | `/api/account` | 修改名稱、時區、早晚時間、推播開關 |
+| PATCH | `/api/account` | 修改名稱、時區、所有餐次時間、推播開關 |
 | GET | `/api/feed?date=YYYY-MM-DD` | 查詢當天紀錄 |
 | PUT | `/api/feed` | 設定某日某時段完成／取消 |
 | GET | `/api/history?days=30` | 近 1–90 筆餵食歷史 |
@@ -119,7 +119,7 @@ Worker 的瀏覽器 CORS 限定 `https://b110212000.github.io`，但**CORS 不�
 ## 儲存與離線策略
 
 - 未開啟雲端：沿用 `ylg-*` 本機資料。
-- 啟用雲端：會先將**今天**已打勾的兩個餵食時段和早晚時間寫進專屬帳戶；之後餵食打卡採樂觀本地更新，操作排入 `ylg-cloud-pending-v1`，連線恢復再同步。
+- 啟用雲端：會先將**今天**已打勾的所有仍有效餐次與完整餐次配置寫進專屬帳戶；之後餵食打卡採樂觀本地更新，操作排入 `ylg-cloud-pending-v1`，連線恢復再同步。
 - 雲端資料不會自動上傳全部既有日記、六項檢查及其他歷史；後端 MVP **僅儲存餵食紀錄、名稱、提醒和訂閱**。
 - 備份 JSON 可保留原有 `ylg-` 資料；包含金鑰的備份檔需特別保護。
 - iPhone Web Push 需要 iOS/iPadOS 16.4 以上、主畫面 PWA、使用者在 App 內授權、有效訂閱及網路連線。OS 仍可能依系統設定延遲或抑制通知，不能保證每次準點送達。
