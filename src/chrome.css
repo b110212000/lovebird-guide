@@ -1,0 +1,19 @@
+/* Modal, toast, sidebar — fixed iOS-friendly overlays, separate scrolling */
+.toast-region{position:fixed;top:calc(env(safe-area-inset-top,0px) + 71px);left:14px;right:14px;pointer-events:none;display:grid;place-items:center;z-index:120}
+.toast{max-width:min(440px,95vw);padding:13px 19px;border-radius:13px;background:#294532;color:#fff;box-shadow:0 8px 26px #1936223d;font-size:15px;font-weight:750;text-align:center;animation:drop-in .18s ease-out}.toast.error{background:#b4534a}@keyframes drop-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.modal-backdrop{position:fixed;inset:0;z-index:110;background:#1c30205b;padding:calc(env(safe-area-inset-top) + 15px) 14px calc(env(safe-area-inset-bottom) + 15px);display:flex;justify-content:center;align-items:center}
+.help-modal{width:100%;max-width:470px;max-height:min(80dvh,720px);display:flex;flex-direction:column;min-height:140px;background:#fff;border-radius:23px;box-shadow:0 20px 60px #0d271938;padding:18px;outline:none}
+.modal-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.modal-head h2{font-size:21px;flex:1;margin:0}.modal-icon{display:grid;place-items:center;width:39px;height:39px;background:#e8f4e5;border-radius:13px}.modal-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.help-line{background:#f5faf2;border-radius:14px;padding:14px 15px;margin:9px 0;font-size:16px;line-height:1.7}.modal-install>div{border-bottom:1px solid #e7ece3;padding:12px 0}.modal-install b{display:block}.modal-install span{display:block;color:#7a8879;font-size:15px;margin-top:5px}.help-modal>.wide-button{flex:none;margin-top:13px}
+.drawer-layer{position:fixed;inset:0;z-index:100;visibility:hidden;pointer-events:none}.drawer-layer.open{visibility:visible;pointer-events:auto}
+.drawer-scrim{position:absolute;inset:0;width:100%;height:100%;border:0;background:#16251c66;opacity:0;transition:opacity .22s}.drawer-layer.open .drawer-scrim{opacity:1}
+.drawer{position:absolute;top:0;bottom:0;left:0;height:100%;height:100dvh;width:min(86vw,360px);background:#fffdf6;box-shadow:10px 0 38px #10271833;display:flex;flex-direction:column;overflow:hidden;transform:translateX(-105%);transition:transform .25s ease;padding:calc(env(safe-area-inset-top) + 15px) 0 calc(env(safe-area-inset-bottom) + 12px);overscroll-behavior:contain}
+.drawer-layer.open .drawer{transform:translateX(0)}
+.drawer-head{flex:0 0 auto;display:flex;align-items:center;gap:11px;padding:0 14px 14px;border-bottom:1px solid #e4ebe2}
+.drawer-avatar{display:grid;place-items:center;background:#ffe2a1;width:47px;height:47px;border-radius:15px;font-size:28px;flex:none}
+.drawer-head>span:nth-child(2){flex:1;min-width:0}.drawer-head b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.drawer-head small{display:block;color:#849286;font-size:12px}
+.drawer-head .icon-button{width:39px;min-width:39px;height:39px;font-size:19px}
+.drawer-list{flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;display:flex;flex-direction:column;gap:5px;padding:12px}
+.drawer-list button{min-height:54px;display:flex;align-items:center;gap:12px;border:0;background:transparent;text-align:left;border-radius:13px;padding:11px 12px;color:#3a573e}.drawer-list button>span:first-child{width:32px;font-size:23px;text-align:center}.drawer-list b{font-size:17px;flex:1}
+.drawer-foot{flex:0 0 auto;border-top:1px solid #e4ebe2;padding:14px;color:#809282;font-size:12px;text-align:center}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}

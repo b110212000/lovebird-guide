@@ -1,0 +1,11 @@
+import {build} from 'esbuild';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+const pkg=JSON.parse(await readFile('package.json','utf8'));
+const version=pkg.version;
+await mkdir('assets',{recursive:true});
+await build({entryPoints:['src/main.jsx'],outfile:'assets/app-'+version+'.js',bundle:true,minify:true,format:'esm',target:['safari16','chrome110'],jsx:'automatic',legalComments:'linked',define:{'process.env.NODE_ENV':'"production"'}});
+const template=await readFile('src/index.html','utf8');
+await writeFile('index.html',template.replaceAll('__VERSION__',version));
+const worker=await readFile('src/sw.js','utf8');
+await writeFile('sw.js',worker.replaceAll('__VERSION__',version));
+console.log('Built React Banana Care',version);
