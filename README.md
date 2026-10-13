@@ -1,4 +1,4 @@
-# 香蕉的养鸟手册 · React v2.3.0
+# 香蕉的养鸟手册 · React v2.4.0
 
 免费 iPhone PWA，部署在 GitHub Pages：
 https://b110212000.github.io/lovebird-guide/
@@ -11,14 +11,14 @@ https://b110212000.github.io/lovebird-guide/
 - `src/styles.css` 和 `src/chrome.css`：固定标题列、独立滑动区、底部导航、全屏抽屉、Modal、Toast，参考 MLB 记分板的设计逻辑。
 - `src/index.html` 和 `src/sw.js`：GitHub Pages 静态入口和 PWA 离线缓存模板。
 - `scripts/build.mjs`：esbuild 打包。
-- `.github/workflows/build-react.yml`：main 更新源文件时安装依赖并生成正式 `index.html`、`sw.js`、`assets/app-2.3.0.js` 和 CSS。
+- `.github/workflows/build-react.yml`：main 更新源文件时安装依赖并生成正式 `index.html`、`sw.js`、`assets/app-2.4.0.js` 和 CSS。
 
 ## 主要功能
 
 1. 五个 Tab：首页、指南、月龄、打卡、设置。首页不再塞满说明文字。
 2. 右上角问号打开说明 Modal，操作结果使用约 2 秒 Toast，错误约 4 秒。
-3. 小鸟名称、生日、早晚检查时间、每日六项检查、完成时间及观察日记只保存在 localStorage。沿用旧版 `ylg-` 数据键，升级不主动清理旧资料。
-4. 保留 iPhone 日历重复提醒的 ICS 导出；**App 关闭后，纯前端网页无法可靠地后台准时推送**。
+3. 小鸟名称、生日、早晚检查时间、每日六项检查、完成时间及观察日记可先保存在 localStorage；开启个人云端账号后，鸟名、早晚提醒、餵食打卡可同步到独立的 Cloudflare 后端，其余内容仍留在本机。沿用 `ylg-` 数据键，不主动清理旧资料。
+4. 保留 iPhone 日历重复提醒的 ICS 导出；已实现 Cloudflare Web Push 后端。**实际推送必须先连接真实 Worker URL、开启云端并取得 iPhone 通知授权；尚未完成实机验证。**
 5. 安装分享、简繁切换、维基百科背景知识与 JSON 备份／恢复。
 
 ## 本地开发
@@ -35,6 +35,27 @@ npm run build
 未断奶幼鸟需要鸟类兽医指导；每日两次勾选表示检查、补充主食，不代表限制鸟一天只能吃两次。
 
 
-## v2.4.0 — 個人養鳥雲端後端（待 Cloudflare 部署）
+## v2.4.0 — 个人养鸟云端后端
 
-已新增 `worker/` 獨立 Cloudflare Workers + Durable Objects 後端，帳戶高熵金鑰驗證、每人獨立餵食紀錄、早晚 Alarm 與 Web Push；React 設定中新增「雲端同步與通知」。**尚未部署 Worker 前，預設停用雲端並保留全部本機功能**。完整部署與安全說明見 [`worker/README.md`](./worker/README.md)。
+独立 Cloudflare Workers + Durable Objects 后端，支持个人账号恢复密钥、鸟名、喂食打卡、早晚提醒、Web Push 订阅与历史查询。React 设置新增「云端同步与通知」。
+
+**部署进度（2026-10-13）：** Cloudflare Workers Builds 已由使用者在控制台设置并反馈首次部署成功；**真正的 Worker URL 尚未接入 React**，所以目前 App 仍默认使用本地模式。
+
+### 后端自动部署（已成功使用的 Cloudflare 网页流程）
+
+| Cloudflare 设置项 | 值 |
+|---|---|
+| GitHub Repository | `b110212000/lovebird-guide` |
+| Project name | `banana-care-api` |
+| Build command | `npm ci` |
+| Deploy command | `npx wrangler deploy` |
+| Preview command | `npx wrangler preview` |
+| Advanced settings → Path | `/worker` |
+| API token | `Create new token` |
+| API token name | `banana-care-deploy` |
+
+首次通过 Cloudflare Workers Builds 连接 GitHub，之后 `worker/` 更新可由 Cloudflare 自动部署；React 前端仍由 GitHub Actions 构建为 GitHub Pages。**两套部署相互独立，不影响 MLB 比分网站。**
+
+接下来需要在 Cloudflare 找到实际 Worker HTTPS 网址，访问 `/health` 验证，再填写 `src/cloud-config.js` 中的 `API_BASE`。不要凭空猜测 Worker URL。
+
+完整操作、API、安全限制与 iPhone 推播说明：[worker/README.md](./worker/README.md)。
