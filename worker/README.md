@@ -1,6 +1,6 @@
 # 香蕉養鳥手冊：個人後端 MVP（Cloudflare Workers）
 
-**目前狀態：原始碼與 React UI 已整合，等待 Cloudflare 帳戶完成部署。** 這份設定不會修改既有 MLB Worker。
+**部署狀態（2026-10-13）：使用者已回報 Cloudflare Workers Builds 首次部署成功。** GitHub 後端與 React UI 原始碼已完成；尚需將 Cloudflare 顯示的**實際 Worker 網址**填入 React `src/cloud-config.js` 才會啟用雲端功能。這個 Worker 與 MLB Worker 完全獨立。
 
 ## 架構
 
@@ -22,28 +22,41 @@ React PWA (GitHub Pages)
 
 **每個人獨立**：不同使用者的 BirdAccount 狀態隔離，沒有共同小鳥或彼此查看功能。accountId 不足以存取資料，API 每次驗證 256-bit 隨機金鑰的 SHA-256。金鑰由使用者自行保存為復原碼；遺失且沒有備份將無法恢復。初版沒有電子郵件/密碼登入，也沒有後端帳號找回服務。
 
-## Cloudflare 第一次部署（跟 MLB 網站相同的方式）
+## Cloudflare 第一次部署（已實際操作成功的 GitHub 自動部署流程）
 
-**使用 Cloudflare Workers Builds 連接 GitHub 自動部署，不需要在本機執行 npm、Wrangler 登入或手動部署。**
+這個專案使用 **Cloudflare Workers Builds → 連接 GitHub**，後端直接由 Cloudflare 編譯與部署；**不需要使用者在自己的電腦安裝 Node.js、登入 Wrangler 或手動推送**。
 
-1. 開啟 [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages**。
-2. 選擇建立 Worker，使用 **Import a repository / Connect to Git**（不同介面版本名稱可能略有差異）。
-3. 選擇 GitHub 帳戶以及 Repository **`b110212000/lovebird-guide`**，分支 **`main`**。
-4. 在 Builds / Advanced settings 設定：
+1. 開啟 [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages**，新增 Worker 並選擇從 GitHub Repository 匯入。
+2. 選擇 `b110212000/lovebird-guide`，使用 `main` 分支。
+3. 在 **Set up your application** 與展開的 **Advanced settings**，照下表填入（這些是實際操作時的畫面名稱）：
 
-   | 選項 | 值 |
+   | Cloudflare 欄位 | 實際設定 |
    |---|---|
-   | Worker name | `banana-care-api` |
-   | GitHub Repository | `b110212000/lovebird-guide` |
-   | Production branch | `main` |
-   | Root directory | `worker`（某些介面會顯示為 `/worker`） |
-   | Build command | 留空；Cloudflare 會安裝依賴 |
+   | GitHub repository | `b110212000/lovebird-guide` |
+   | Project name | `banana-care-api` |
+   | Build command | `npm ci` |
    | Deploy command | `npx wrangler deploy` |
+   | Preview command | `npx wrangler preview`（當前建立畫面要求必填） |
+   | Advanced settings → Path | `/worker` |
+   | API token | `Create new token` |
+   | API token name | `banana-care-deploy` |
 
-5. 等待 **首次部署完成**，Cloudflare 會提供實際的 Worker URL。後端名稱、子網域以 Cloudflare 顯示結果為準，**不要自行猜測 URL**。
-6. 開啟實際的 `https://<Cloudflare 提供的網址>/health`，確認 API 回傳 `ok: true`。
-7. 再把 **實際** HTTPS Worker 網址（不含尾端斜線）填入 `src/cloud-config.js` 的 `API_BASE`，提交 GitHub。React 會由 GitHub Actions 自動建置並發布至 GitHub Pages。網址確認前不要填入猜測的值。
-8. 朋友在自己的 iPhone 主畫面 PWA 進入「設定 → 雲端同步與通知」，建立個人帳戶、妥善保存復原金鑰，再按「開啟推播通知」並授權。可將提醒時間調到幾分鐘後進行真機測試。
+4. 點擊 **Deploy** 並確認 Cloudflare 的部署結果為成功。第一次連接 GitHub 與建立 API Token 時，請依畫面完成授權。
+5. 部署成功後，Cloudflare 會顯示實際 Workers URL，例如 `https://<你的帳戶所顯示的 workers.dev 網址>`。**這裡不能猜測網址，也不要將上面的範例字串當成真實網址。**
+6. 以瀏覽器開啟 `<實際 Worker URL>/health`，應看到 JSON，包含 `"ok":true`。
+7. 在 React 專案 `src/cloud-config.js` 將 `API_BASE` 從空字串改成**實際 Worker 的 HTTPS 網址**（不加尾端斜線），推送 GitHub 後 GitHub Actions 會自動發布前端。
+8. 朋友在 iPhone 主畫面 PWA，透過「設定 → 雲端同步與通知」建立自己的帳戶，保存復原金鑰並在系統授權後開啟推播。建議用幾分鐘後的提醒時間測試。
+
+> **重要**：設定了 `Advanced settings → Path: /worker`，Build／Deploy／Preview 指令就直接在 `worker` 執行，**不需要額外寫 `cd worker`**。以上是首次設定時使用者回報成功的流程；各 Cloudflare 帳戶的介面用語可能有所調整。
+
+### 目前狀態與尚待完成
+
+- <escape>[x]</escape> 建立獨立的 `banana-care-api` Cloudflare Workers Builds 專案（使用者回報部署成功）。
+- <escape>[x]</escape> `worker/wrangler.jsonc` 設定 BirdAccount／PushService Durable Objects。
+- <escape>[x]</escape> `worker/package-lock.json` 已提交，Wrangler 乾跑打包檢查通過。
+- <escape>[ ]</escape> 取得並驗證 Cloudflare 實際 Worker URL 與 `/health`。
+- <escape>[ ]</escape> 將實際 Worker URL 寫入 `src/cloud-config.js`，啟用 React 雲端功能。
+- <escape>[ ]</escape> 在 iPhone PWA 實際測試帳戶建立、同步、推播權限及背景通知。
 
 ### GitHub 推送後會發生什麼？
 
@@ -70,7 +83,7 @@ Cloudflare Worker 使用 SQLite-backed Durable Objects，依照 MLB 現行的 `w
 - 有有效訂閱、排程時間到達且使用者尚未打勾。
 - 背景推播仍可能因網路與 iOS 系統設定延遲，不能保證每次準點送達。
 
-**目前尚未代你連接 Cloudflare 帳戶；這需要你在 Dashboard 完成第一次 GitHub 授權與專案建立。** Worker 原始碼／建置檢查完成並不等於已部署。
+**Cloudflare 首次部署已由使用者回報成功；後續仍須驗證 API 網址，接上前端並完成 iPhone 實機測試。**
 
 ## API
 
