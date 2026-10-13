@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="黄色牡丹鹦鹉香蕉">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a9e4ff"/><stop offset=".6" stop-color="#57bcef"/><stop offset="1" stop-color="#358ad4"/></linearGradient>
+<linearGradient id="body" x1="0" y1="0" x2=".95" y2=".9"><stop stop-color="#fff9a2"/><stop offset=".42" stop-color="#ffe35e"/><stop offset="1" stop-color="#ffc336"/></linearGradient>
+<radialGradient id="face" cx=".4" cy=".38" r=".77"><stop stop-color="#ffd6a2"/><stop offset=".74" stop-color="#ff9b7a"/><stop offset="1" stop-color="#ee7c5d"/></radialGradient>
+<linearGradient id="beak" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff5db"/><stop offset=".58" stop-color="#ffb690"/><stop offset="1" stop-color="#e8846e"/></linearGradient>
+<linearGradient id="wood" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#aa704a"/><stop offset="1" stop-color="#69442e"/></linearGradient>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#346da6" flood-opacity=".26"/></filter>
+</defs>
+<rect width="512" height="512" fill="url(#sky)"/>
+<g opacity=".55" fill="#fff"><ellipse cx="90" cy="108" rx="92" ry="30"/><ellipse cx="175" cy="104" rx="56" ry="25"/><ellipse cx="435" cy="350" rx="105" ry="32"/><ellipse cx="366" cy="344" rx="56" ry="24"/></g>
+<g fill="#6fb766"><path d="M0 386Q52 270 131 328Q113 401 0 421Z"/><path d="M3 283Q74 204 139 255Q115 313 3 332Z"/><path d="M512 370Q440 259 389 319Q401 392 512 412Z"/></g>
+<g filter="url(#shadow)">
+<path d="M113 398Q105 329 159 273Q151 207 195 157Q236 111 304 119Q384 128 398 212Q400 244 371 267Q419 309 417 397L400 473L147 479Z" fill="url(#body)"/>
+<path d="M239 294Q174 299 157 379Q175 431 244 456Q297 412 284 339Z" fill="#ffcd39" opacity=".55"/>
+<path d="M184 225Q173 165 223 132Q275 98 326 122Q364 138 372 190Q376 246 336 290Q296 332 237 314Q195 293 184 225Z" fill="url(#face)"/>
+<path d="M321 147Q297 109 248 123Q211 132 200 170Q260 147 321 165Z" fill="#ffed73"/>
+<path d="M219 225Q214 185 246 177Q282 177 287 216Q286 254 253 261Q221 255 219 225Z" fill="#f4ac8c" opacity=".48"/>
+<ellipse cx="271" cy="207" rx="28" ry="32" fill="#fff2dc"/>
+<ellipse cx="273" cy="206" rx="22" ry="26" fill="#3b2926"/>
+<ellipse cx="276" cy="206" rx="15" ry="20" fill="#161b22"/>
+<circle cx="266" cy="194" r="8" fill="#fff"/>
+<circle cx="283" cy="218" r="3" fill="#e9eef6"/>
+<path d="M330 213Q377 198 386 232Q387 262 355 286Q342 310 320 308Q330 282 329 261Q306 245 330 213Z" fill="url(#beak)" stroke="#d88870" stroke-width="4" stroke-linejoin="round"/>
+<path d="M345 246Q346 269 333 286" stroke="#bf7065" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M182 304Q125 354 168 419Q201 455 284 468Q264 402 232 351Z" fill="#f9bc2c" opacity=".6"/>
+<path d="M0 446Q215 404 512 464L512 512H0Z" fill="url(#wood)"/>
+<path d="M0 461Q226 422 512 477" fill="none" stroke="#c48c5a" stroke-width="9" opacity=".7"/>
+<path d="M215 437Q211 456 202 463M228 436Q226 453 219 463M305 445Q297 460 297 471M318 445Q313 456 312 470" stroke="#e79d91" stroke-width="12" fill="none" stroke-linecap="round"/>
+</g>
+<g fill="#fffaf1" opacity=".95"><path d="M410 148C397 129 375 144 387 162L414 190L440 161C454 142 430 129 417 150Z"/><path d="M457 104L459 88" stroke="#fffaf1" stroke-width="10" stroke-linecap="round"/><path d="M478 119L490 108" stroke="#fffaf1" stroke-width="10" stroke-linecap="round"/></g>
+</svg>
