@@ -1,4 +1,4 @@
-# 香蕉的养鸟手册 · React v2.4.0
+# 香蕉的养鸟手册 · React v2.5.0
 
 免费 iPhone PWA，部署在 GitHub Pages：
 https://b110212000.github.io/lovebird-guide/
@@ -59,3 +59,13 @@ npm run build
 接下来需要在 Cloudflare 找到实际 Worker HTTPS 网址，访问 `/health` 验证，再填写 `src/cloud-config.js` 中的 `API_BASE`。不要凭空猜测 Worker URL。
 
 完整操作、API、安全限制与 iPhone 推播说明：[worker/README.md](./worker/README.md)。
+
+## v2.5.0 — 自訂餵食時間與實際餵食打卡
+
+- 「打卡 → 餵食確認」直接顯示**早上及晚上預定餵食時間**，可在卡片內使用 iPhone 時間選擇器修改。
+- 明確區分「尚未到時間、快到時間、該餵食了、已完成」；首頁可見下一次尚未確認的預定時間。
+- 按「確認已餵」時以裝置當下時間記錄 `completedAt`，成功 Toast 顯示實際完成時間；卡片保留時刻，可取消勾選後重做。
+- 「最近 7 天餵食紀錄」預設折疊，能查詢先前本機完成時刻；已連接雲端者也能在雲端歷史看到時刻。
+- 修改餵食時間會更新 `ylg-feed-schedule-v1`，並在已連接雲端時同步到 Cloudflare Worker 的推播排程。
+- `PUT /api/feed` 新增可選 `completedAt`（ISO 8601）欄位，**離線後再同步也保留實際按下打卡的時間**；舊版客戶端不傳此欄位仍相容。
+- 早晚兩個時段是提醒檢查及補充食物，**不是每天只能讓鳥吃兩次**；健康已斷奶鳥需持續供應適當主食及清水。

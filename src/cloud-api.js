@@ -29,7 +29,7 @@ export async function registerAccount(name,timezone){
 }
 export function cloudState(creds,date){return request('/api/state?date='+encodeURIComponent(date),{creds})}
 export function cloudUpdate(creds,body){return request('/api/account',{method:'PATCH',body,creds})}
-export function cloudFeed(creds,date,slot,done){return request('/api/feed',{method:'PUT',body:{date,slot,done},creds})}
+export function cloudFeed(creds,date,slot,done,completedAt){return request('/api/feed',{method:'PUT',body:{date,slot,done,completedAt},creds})}
 export function cloudHistory(creds,days=30){return request('/api/history?days='+days,{creds})}
 export function cloudSubscribe(creds,subscription){return request('/api/subscription',{method:'PUT',body:{subscription},creds})}
 export function cloudUnsubscribe(creds){return request('/api/subscription',{method:'DELETE',creds})}
@@ -52,7 +52,7 @@ export async function syncPending(creds){
    if(!Array.isArray(queue)||!queue.length)return true;
    const job=queue[0];
    try{
-    if(job.kind==='feed')await cloudFeed(creds,job.date,job.slot,job.done);
+    if(job.kind==='feed')await cloudFeed(creds,job.date,job.slot,job.done,job.completedAt);
     else if(job.kind==='account')await cloudUpdate(creds,job.patch);
    }catch{return false}
    // Preserve any edits queued while this network request was in flight.

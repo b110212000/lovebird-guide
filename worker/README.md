@@ -104,10 +104,16 @@ Cloudflare Worker 使用 SQLite-backed Durable Objects，依照 MLB 現行的 `w
 `x-account-id: <accountId>` 以及 `Authorization: Bearer <accessKey>`。
 Worker 的瀏覽器 CORS 限定 `https://b110212000.github.io`，但**CORS 不是驗證**，實際授權靠高熵金鑰。請不要把 accessKey 印到伺服器日誌、放在公開 repo 或傳給別人。後端未暴露查詢其他帳號的介面。
 
+### v2.5.0：餵食實際完成時間
+
+`PUT /api/feed` 可提供 `completedAt`，格式為帶 `Z` 的 ISO 8601 UTC 時間（例如 `2026-10-13T00:12:00.000Z`）；Worker 會在驗證後儲存此時間，而不是以「連上網路的同步時刻」代替。可接受距現在 90 天內的既有完成時刻，不可超過現在五分鐘以上。省略時維持舊版以伺服器當下時間記錄，向下相容。
+
+使用者直接在 React「打卡」頁修改兩個預定時間時會更新帳戶 `times`，並重新安排 Durable Object Alarm。若先前已手動將 `.ics` 加入 iPhone 行事曆，**編輯 App 時間不會自動改寫行事曆中的既有事件**，需要自行修改或重新匯入並移除舊事件。
+
 ### PUT /api/feed 範例
 
 ```json
-{"date":"2026-10-13","slot":"morning","done":true}
+{"date":"2026-10-13","slot":"morning","done":true,"completedAt":"2026-10-13T00:12:00.000Z"}
 ```
 
 ## 儲存與離線策略

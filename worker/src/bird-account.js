@@ -109,7 +109,18 @@ export class BirdAccount extends DurableObject{
     const date=body.date||localComponents(Date.now(),state.timezone).date;
     if(!validDate(date)||!SLOT_IDS.includes(body.slot)||typeof body.done!=='boolean')return json({error:'INVALID_FEED'},400);
     const key='feed:'+date,record=await this.ctx.storage.get(key)||{};
-    if(body.done&&!record[body.slot])record[body.slot]=new Date().toISOString();
+    if(body.done&&!record[body.slot]){
+      // Preserve the real check-in time even when the device was offline.
+      // Legacy clients can omit completedAt and will use server time.
+      const reported=body.completedAt;
+      if(reported!==undefined&&reported!==null){
+       const when=typeof reported==='string'?Date.parse(reported):NaN;
+       if(!Number.isFinite(when)||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(reported)
+         ||when>Date.now()+300000||when<Date.now()-90*24*60*60*1000)
+        return json({error:'INVALID_COMPLETED_AT'},400);
+       record[body.slot]=new Date(when).toISOString();
+      }else record[body.slot]=new Date().toISOString();
+     }
     if(!body.done)delete record[body.slot];
     await this.ctx.storage.put(key,record);
     return json({date,feed:record});

@@ -1,0 +1,30 @@
+/* v2.5.0 — iPhone feeding check-in card: planned time + actual completion timestamp */
+.feeding-app{display:grid;gap:13px}
+.feeding-summary{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(110deg,#fff5d9,#f2faef);border:1px solid #e5e6d4;border-radius:20px;padding:17px 19px}
+.feeding-summary>div{display:flex;flex-direction:column;gap:2px}
+.feeding-kicker{font-size:14px;font-weight:760;color:#7f754b}
+.feeding-summary strong{font-size:30px;line-height:1.2;color:#386c43}
+.feeding-summary p{margin:0;max-width:55%;font-size:15px;line-height:1.55;font-weight:750;color:#55735b;text-align:right}
+.feeding-list{display:grid;gap:13px}
+.feeding-card{border:1px solid #e3eae0;border-radius:21px;background:#fff;padding:16px;display:grid;gap:12px;box-shadow:0 4px 19px #496a4410}
+.feeding-card.due{border-color:#edd7a9;background:#fffdfa}.feeding-card.done{border-color:#cfe6cc;background:#fafff9}
+.feeding-card-top{display:flex;gap:12px;align-items:center}
+.feeding-avatar{display:grid;place-items:center;width:50px;height:50px;background:#f5f6ed;border-radius:15px;font-size:27px;flex:none}
+.feeding-heading{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.feeding-heading strong{font-size:19px}.feeding-state{font-size:14px;color:#758778;font-weight:720}
+.feeding-state.due{color:#a16a20}.feeding-state.soon{color:#a28133}.feeding-state.done{color:#4d8653}
+.feeding-time-line{display:flex;gap:12px;align-items:center;justify-content:space-between;min-height:53px;padding:10px 13px;border-radius:14px;background:#f5f8f3;font-size:16px;font-weight:740}
+.feeding-time-line>span{flex:1}.feeding-time-line input{width:138px;max-width:45%;font-size:19px;font-weight:850;text-align:center;color:#396e44;border:1px solid #dbe9d7;border-radius:12px;background:white;padding:10px 8px;min-height:47px;appearance:auto;-webkit-appearance:auto}
+.feeding-record{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 12px;background:#eaf6e7;border-radius:12px;color:#45814e}
+.feeding-record span{font-size:15px;font-weight:740}.feeding-record strong{font-size:20px;font-variant-numeric:tabular-nums}
+.feeding-check-button{border:none;border-radius:14px;min-height:52px;background:#427a4d;color:#fff;font-size:17px;font-weight:850;box-shadow:0 4px 15px #37734624}
+.feeding-check-button.done{background:#e6f2e5;color:#3d7746;border:1px solid #d3e7d0;box-shadow:none}
+.feeding-history{background:#fff;border:1px solid #e4eae2;border-radius:17px;overflow:hidden}
+.feeding-history>summary{display:flex;align-items:center;gap:9px;cursor:pointer;list-style:none;padding:17px;font-size:16px;font-weight:770;min-height:55px}
+.feeding-history>summary::-webkit-details-marker{display:none}.feeding-history>summary span{margin-left:auto;color:#8b9d8c}.feeding-history[open]>summary span{transform:rotate(180deg)}
+.feeding-history>div{padding:4px 15px 13px;border-top:1px solid #eaf0e9}
+.feeding-history-row{display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #edf2eb;padding:11px 2px}
+.feeding-history-row:last-child{border-bottom:0}
+.feeding-history-row strong{font-size:15px}.feeding-history-row span,.feeding-history p{font-size:14px;color:#647a67;line-height:1.6;margin:0}
+.cloud-history-row{align-items:flex-start}.cloud-history-feed{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.cloud-history-feed small{font-size:13px;color:#708472}
+@media(max-width:420px){.feeding-summary{padding:15px}.feeding-summary p{font-size:14px}.feeding-card{padding:14px}.feeding-time-line input{width:124px;font-size:17px}}

@@ -4,4 +4,5 @@ import {App} from './App.jsx';
 import './styles.css';
 import './chrome.css';
 import './cloud.css';
+import './feeding.css';
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);
