@@ -22,25 +22,55 @@ React PWA (GitHub Pages)
 
 **每個人獨立**：不同使用者的 BirdAccount 狀態隔離，沒有共同小鳥或彼此查看功能。accountId 不足以存取資料，API 每次驗證 256-bit 隨機金鑰的 SHA-256。金鑰由使用者自行保存為復原碼；遺失且沒有備份將無法恢復。初版沒有電子郵件/密碼登入，也沒有後端帳號找回服務。
 
-## Cloudflare 第一次部署
+## Cloudflare 第一次部署（跟 MLB 網站相同的方式）
 
-1. 確認你可以登入 Cloudflare 且有 Workers 使用權限；請勿把 Cloudflare API Token 或 VAPID 私鑰提交到 GitHub。
-2. 本機 clone `b110212000/lovebird-guide`。
-3. 終端機執行：
+**使用 Cloudflare Workers Builds 連接 GitHub 自動部署，不需要在本機執行 npm、Wrangler 登入或手動部署。**
 
-```sh
-cd worker
-npm install
-npx wrangler login
-npm run deploy
+1. 開啟 [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages**。
+2. 選擇建立 Worker，使用 **Import a repository / Connect to Git**（不同介面版本名稱可能略有差異）。
+3. 選擇 GitHub 帳戶以及 Repository **`b110212000/lovebird-guide`**，分支 **`main`**。
+4. 在 Builds / Advanced settings 設定：
+
+   | 選項 | 值 |
+   |---|---|
+   | Worker name | `banana-care-api` |
+   | GitHub Repository | `b110212000/lovebird-guide` |
+   | Production branch | `main` |
+   | Root directory | `worker`（某些介面會顯示為 `/worker`） |
+   | Build command | 留空；Cloudflare 會安裝依賴 |
+   | Deploy command | `npx wrangler deploy` |
+
+5. 等待 **首次部署完成**，Cloudflare 會提供實際的 Worker URL。後端名稱、子網域以 Cloudflare 顯示結果為準，**不要自行猜測 URL**。
+6. 開啟實際的 `https://<Cloudflare 提供的網址>/health`，確認 API 回傳 `ok: true`。
+7. 再把 **實際** HTTPS Worker 網址（不含尾端斜線）填入 `src/cloud-config.js` 的 `API_BASE`，提交 GitHub。React 會由 GitHub Actions 自動建置並發布至 GitHub Pages。網址確認前不要填入猜測的值。
+8. 朋友在自己的 iPhone 主畫面 PWA 進入「設定 → 雲端同步與通知」，建立個人帳戶、妥善保存復原金鑰，再按「開啟推播通知」並授權。可將提醒時間調到幾分鐘後進行真機測試。
+
+### GitHub 推送後會發生什麼？
+
+```text
+GitHub push
+   ├── 前端 src/ 修改 → GitHub Actions 編譯 React → GitHub Pages
+   └── worker/ 修改 → Cloudflare Workers Builds → npx wrangler deploy
 ```
 
-4. Wrangler 部署後會顯示**實際 Workers HTTPS 網址**。開啟 `https://你的實際workers網址/health`，應得到 `{"ok":true,"app":"banana-care",...}`。
-5. 將 **實際網址**（不用尾端斜線）填入網站 `src/cloud-config.js` 的 `API_BASE`，提交到 main，GitHub Actions 會編譯 React 並發布 GitHub Pages。未填時「設定 → 雲端同步與通知」會顯示尚未部署，不影響本機打卡。
-6. iPhone 請從 Safari 將網站加入主畫面後開啟，進入「設定 → 雲端同步與通知」，按「啟用我的雲端帳戶」，妥善保存復原金鑰。按「開啟推播通知」，允許系統通知。
-7. 可設定一個未來幾分鐘的提醒時間做實機測試。**只有 Worker 真正部署、使用者啟用通知、系統推播權限允許，且該時段尚未打卡時**才會觸發 Web Push。
+與 MLB 相同，Cloudflare 後端專案**只要第一次連上 GitHub，往後就自動部署**；**不用每次手動重新部署**，也**不會更動 MLB 的 Worker**。
 
-Cloudflare Wrangler 需要你的登入授權；GitHub Pages 自動建置並不等於 Worker 已部署。開發階段可執行 `npm run dev` 測試 API，但推播必須靠支援的實際 Web Push endpoint 驗證。
+### Workers Builds 必須注意的 lockfile
+
+MLB 後端會提交 `worker/package-lock.json`，Cloudflare 才能穩定執行 `npm ci`。
+
+本專案另有 GitHub Actions `Validate Banana Cloudflare Worker`：若 `worker/package-lock.json` 尚未存在，會自動建立並提交；若套件清單變動，也會更新 lockfile。連接 Cloudflare Builds **之前先確認 GitHub 上已有 `worker/package-lock.json`**。
+
+Cloudflare Worker 使用 SQLite-backed Durable Objects，依照 MLB 現行的 `wrangler.jsonc` 做法以 `exports` 宣告 `BirdAccount` 與 `PushService`。Cloudflare Workers Free 可使用 SQLite-backed Durable Objects，但需留意用量上限。
+
+### 推播的必要條件
+
+- 使用者已安裝至 iPhone 主畫面並允許 Web Push。
+- Cloudflare Worker 已成功部署，React 已設定正確的 API URL。
+- 有有效訂閱、排程時間到達且使用者尚未打勾。
+- 背景推播仍可能因網路與 iOS 系統設定延遲，不能保證每次準點送達。
+
+**目前尚未代你連接 Cloudflare 帳戶；這需要你在 Dashboard 完成第一次 GitHub 授權與專案建立。** Worker 原始碼／建置檢查完成並不等於已部署。
 
 ## API
 
