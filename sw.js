@@ -1,6 +1,6 @@
-/* Banana Care PWA 2.5.0 */
-const NAME='banana-react-2.5.0';
-const CORE=['./','./index.html','./manifest.webmanifest','./assets/app-2.5.0.js','./assets/app-2.5.0.css','./icons/banana.svg','./icons/banana-180.png','./icons/banana-192.png','./icons/banana-512.png'];
+/* Banana Care PWA 2.5.1 */
+const NAME='banana-react-2.5.1';
+const CORE=['./','./index.html','./manifest.webmanifest','./assets/app-2.5.1.js','./assets/app-2.5.1.css','./icons/banana.svg','./icons/banana-180.png','./icons/banana-192.png','./icons/banana-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(NAME);
