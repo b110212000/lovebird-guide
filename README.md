@@ -1,4 +1,4 @@
-# 香蕉的养鸟手册 · React v2.5.0
+# 香蕉的养鸟手册 · React v2.5.1
 
 免费 iPhone PWA，部署在 GitHub Pages：
 https://b110212000.github.io/lovebird-guide/
@@ -11,7 +11,7 @@ https://b110212000.github.io/lovebird-guide/
 - `src/styles.css` 和 `src/chrome.css`：固定标题列、独立滑动区、底部导航、全屏抽屉、Modal、Toast，参考 MLB 记分板的设计逻辑。
 - `src/index.html` 和 `src/sw.js`：GitHub Pages 静态入口和 PWA 离线缓存模板。
 - `scripts/build.mjs`：esbuild 打包。
-- `.github/workflows/build-react.yml`：main 更新源文件时安装依赖并生成正式 `index.html`、`sw.js`、`assets/app-2.4.0.js` 和 CSS。
+- `.github/workflows/build-react.yml`：main 更新源文件时安装依赖并生成正式 `index.html`、`sw.js`、`assets/app-2.5.1.js` 和 CSS。
 
 ## 主要功能
 
@@ -69,3 +69,11 @@ npm run build
 - 修改餵食時間會更新 `ylg-feed-schedule-v1`，並在已連接雲端時同步到 Cloudflare Worker 的推播排程。
 - `PUT /api/feed` 新增可選 `completedAt`（ISO 8601）欄位，**離線後再同步也保留實際按下打卡的時間**；舊版客戶端不傳此欄位仍相容。
 - 早晚兩個時段是提醒檢查及補充食物，**不是每天只能讓鳥吃兩次**；健康已斷奶鳥需持續供應適當主食及清水。
+
+## v2.5.1 — 跟隨裝置語言
+
+- 新安裝或沒有既有語言偏好時，預設 `auto`，依裝置主要語言 `navigator.languages[0]` / `navigator.language` 自動決定：`zh-TW / zh-HK / zh-MO / zh-Hant` 使用繁體中文，`zh-CN / zh-SG / zh-Hans` 使用簡體中文。
+- **設定 → 語言** 提供「跟隨裝置語言／简体中文／繁體中文」。既有已明確選定的簡體或繁體偏好保留，不會自動覆蓋；使用者可切回跟隨裝置。
+- iPhone 主畫面 Web App 返回前景或裝置語言更新時會重新偵測，在 auto 模式下自動切換介面。不支援的裝置語言暫以繁體中文呈現（現階段尚未提供英文、日文翻譯）。
+- 雲端帳戶的推播文案也同步使用目前選定的簡／繁中文（單帳戶目前只儲存一個 Web Push 訂閱，最後啟用裝置的語言設定會生效）。
+- 附 Node.js 單元測試，GitHub Actions 先測試語言對照與手動覆蓋，再編譯 PWA。

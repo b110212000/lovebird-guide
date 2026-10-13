@@ -24,8 +24,8 @@ export async function request(path,{method='GET',body,creds,signal}={}){
     return data;
   }finally{clearTimeout(timer)}
 }
-export async function registerAccount(name,timezone){
-  return request('/api/accounts',{method:'POST',body:{name,timezone}});
+export async function registerAccount(name,timezone,language){
+  return request('/api/accounts',{method:'POST',body:{name,timezone,language}});
 }
 export function cloudState(creds,date){return request('/api/state?date='+encodeURIComponent(date),{creds})}
 export function cloudUpdate(creds,body){return request('/api/account',{method:'PATCH',body,creds})}

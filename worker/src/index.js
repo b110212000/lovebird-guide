@@ -4,7 +4,7 @@ export {BirdAccount,PushService};
 
 const ACCOUNT_ID=/^[a-f0-9]{32}$/;
 const ORIGIN='https://b110212000.github.io';
-const API_VERSION='0.1.0';
+const API_VERSION='0.1.1';
 const apiJson=(body,status=200,headers={})=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store',...headers}});
 function cors(origin){
   return {'access-control-allow-origin':ORIGIN,'vary':'Origin','access-control-allow-methods':'GET,POST,PUT,PATCH,DELETE,OPTIONS','access-control-allow-headers':'content-type,authorization,x-account-id','access-control-max-age':'3600'};
@@ -38,8 +38,9 @@ export default {
         const accessKey=randomSecret();
         const timezone=typeof body.timezone==='string'?body.timezone:'Asia/Taipei';
         const name=typeof body.name==='string'?body.name:'香蕉';
+        const language=typeof body.language==='string'?body.language:'hant';
         const obj=env.BIRD_ACCOUNT.get(env.BIRD_ACCOUNT.idFromName(accountId));
-        const created=await obj.fetch('https://internal/initialize',{method:'POST',body:JSON.stringify({name,timezone,accessKey})});
+        const created=await obj.fetch('https://internal/initialize',{method:'POST',body:JSON.stringify({name,timezone,language,accessKey})});
         if(!created.ok)response=created;
         else response=apiJson({accountId,accessKey,account:(await created.json()).account},201);
       }else if(path.startsWith('/api/')){

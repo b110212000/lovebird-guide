@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "src/**"
+      - "tests/**"
       - "scripts/build.mjs"
       - "package.json"
       - ".github/workflows/build-react.yml"
@@ -20,6 +21,8 @@ jobs:
           node-version: '22'
       - name: Install React and bundler
         run: npm install --no-audit --no-fund
+      - name: Verify language auto-detection and manual override
+        run: npm test
       - name: Build the production website
         run: npm run build
       - name: Publish static assets to GitHub Pages branch
@@ -28,6 +31,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html sw.js package-lock.json assets/
           if ! git diff --cached --quiet; then
-            git commit -m "build: publish React PWA v2.3.0"
+            git commit -m "build: publish React PWA static assets"
             git push origin HEAD:main
           fi

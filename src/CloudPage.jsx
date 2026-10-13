@@ -28,10 +28,10 @@ export function CloudPage({lang,name,schedule,feed,credentials,onConnected,onDis
  };
  const start=()=>perform(async()=>{
   const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Taipei';
-  const account=await registerAccount(name,tz);
+  const account=await registerAccount(name,tz,lang);
   const auth={accountId:account.accountId,accessKey:account.accessKey};
   saveCredentials(auth);
-  await cloudUpdate(auth,{times:schedule});
+  await cloudUpdate(auth,{times:schedule,language:lang});
   for(const [slot,done] of Object.entries(feed||{}))if(['morning','evening'].includes(slot)&&done)await cloudFeed(auth,today(),slot,true);
   const state=await cloudState(auth,today());setRemote(state.account);setPending(queueLength());onConnected(auth);
  },t.createDone);

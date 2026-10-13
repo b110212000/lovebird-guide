@@ -2,9 +2,10 @@ import React,{useState,useEffect,useRef,useCallback} from 'react';
 import {UI,CONTENT} from './content.js';
 import {CloudPage} from './CloudPage.jsx';
 import {FeedingCheckIn,closestFeeding,CLOCK_RE} from './FeedingCheckIn.jsx';
+import {deviceLocale,resolveLanguage} from './device-language.js';
 import {backendReady,readCredentials,cloudState,queueChange,syncPending} from './cloud-api.js';
 
-const V='2.5.0';
+const V='2.5.1';
 const SITE_URL='https://b110212000.github.io/lovebird-guide/';
 const MAIN=['home','guide','growth','journal','settings'];
 const HELP={
@@ -17,7 +18,7 @@ journal:['直接点选卡片上的时间就能调整早晚的计划喂食时间�
 settings:['小鸟名字、提醒、语言及资料备份都在这里调整。','换手机、清除浏览器或删掉主屏幕 App 前先导出 JSON 备份。'],
 pet:['改名后，App 内标题、问候和提醒文字都会更新。','不知道真正生日就留空，别把接回家的日期当生日。'],
 reminders:['网页只有打开或回到前台时才会检查提醒，无法在关闭状态下自己推送。','导出 .ics 后，需要在 iPhone 日历确认导入、开启通知；无法导入时请使用「提醒事项」手动设置每天重复提醒。'],
-language:['简体与繁体中文可随时切换，偏好只储存在当前设备。'],
+language:['默认跟随设备主要语言；台湾、香港与澳门使用繁体，中国大陆与新加坡使用简体。','你仍可以手动指定简体或繁体，随时切回跟随设备。','其他设备语言暂时使用繁体中文；目前没有英语等其他翻译。'],
 backup:['导出为 JSON 文件，包含小鸟资料、提醒时间、打卡、日记。','导入会覆盖相同项目的现有记录。请妥善保管备份文件。'],
 install:['iPhone 使用 Safari 打开→分享→添加到主屏幕→添加。','已安装时无需重复安装，通常重新打开 App 就能获取更新。'],
 arrival:['刚到家先稳定作息、饮水和进食，别强行上手。'],
@@ -36,7 +37,7 @@ journal:['在卡片上點選時間，即可自訂早晚的預定餵食時間。'
 settings:['小鳥名字、提醒、語言和資料備份都在此調整。','換手機、清除資料或刪除主畫面 App 前，請先匯出 JSON。'],
 pet:['改名後，App 內標題、問候與提醒文字會更新。','不知道生日請留空，勿用接回家日期代替。'],
 reminders:['網頁只有開啟或回到前景時才會檢查提醒，關閉後無法自行推播。','匯出 .ics 後，請確認已加入 iPhone 行事曆並啟用通知；無法匯入時可手動設定提醒事項。'],
-language:['可隨時切換繁體、簡體中文；語言偏好僅存在本機。'],
+language:['預設跟隨裝置主要語言；臺灣、香港與澳門使用繁體，中國大陸與新加坡使用簡體。','也可以手動選擇繁體或簡體，隨時切回跟隨裝置。','其他裝置語言暫時顯示繁體中文；目前尚無英文等翻譯。'],
 backup:['匯出的 JSON 包含小鳥資料、提醒時間、打卡與日誌。','匯入時會覆蓋相同項目的既有資料。'],
 install:['使用 iPhone Safari 開啟→分享→加入主畫面→加入。','已安裝的 App 通常只需重新開啟即可更新。'],
 arrival:['剛到家先維持安定作息、清水與實際進食，不要強迫上手。'],
@@ -97,11 +98,35 @@ function Journal({lang,dateKey,feed,onMarkFeed,onChangeSchedule,checked,setCheck
 function Settings({lang,navigate}){const t=I18N[lang];return <div className="view-flow"><div className="section-lead"><h2>{t.tab[4]}</h2><p>{t.settingsHint}</p></div><div className="group-list"><GroupCard emoji="🐥" title={t.pet} onClick={()=>navigate('pet')}/><GroupCard emoji="🔔" title={t.reminders} onClick={()=>navigate('reminders')}/><GroupCard emoji="🌐" title={t.language} onClick={()=>navigate('language')}/><GroupCard emoji="💾" title={t.backup} onClick={()=>navigate('backup')}/><GroupCard emoji="☁️" title={t.cloud} onClick={()=>navigate('cloud')}/><GroupCard emoji="📲" title={t.install} onClick={()=>navigate('install')}/></div><p className="minor-copy center">{t.offline}</p></div>}
 function PetSettings({lang,name,setName,birth,setBirth,toast,onNameCommit}){const t=I18N[lang];const since=birth?new Date(birth+'T12:00:00'):null;const age=since&&since<=new Date()?Math.max(0,(new Date().getFullYear()-since.getFullYear())*12+new Date().getMonth()-since.getMonth()):null;return <div className="view-flow"><div className="section-lead"><h2>{t.pet}</h2></div><div className="form-card"><label>{t.petName}<input type="text" value={name==='香蕉'&&readRaw('ylg-name','')===''?'':name} maxLength={32} placeholder={t.petPlaceholder} onChange={e=>setName(e.target.value||'香蕉')} onBlur={()=>{onNameCommit?.(name);toast(t.nameSaved)}}/></label><label>{t.birthday}<input type="date" value={birth} max={TODAY()} onChange={e=>{setBirth(e.target.value);toast(t.dateSaved)}}/></label><div className="subtle-field">{t.age}：{age===null?t.unknown:age+(lang==='hans'?' 个月':' 個月')}</div></div></div>}
 function ReminderSettings({lang,name,schedule,setSchedule,toast}){const t=I18N[lang];const set=(id,v)=>{if(!validClock(v))return;setSchedule(old=>({...old,[id]:v}));toast(t.timeSaved)};return <div className="view-flow"><div className="section-lead"><h2>{t.reminders}</h2></div><div className="form-card">{['morning','evening'].map((id,i)=><label className="time-setting" key={id}><span>{i?t.evening:t.morning}</span><input type="time" value={schedule[id]||DEFAULT_SCHEDULE[id]} onChange={e=>set(id,e.target.value)}/></label>)}</div><button className="wide-button" onClick={()=>{download('banana-reminders.ics',new Blob([calendarText(name,schedule,lang)],{type:'text/calendar;charset=utf-8'}));toast(t.calendarReady)}}>📅 {t.calendar}</button><p className="minor-copy">{(HELP[lang].reminders).join(' ')}</p></div>}
-function LanguageSettings({lang,setLang}){const t=I18N[lang];return <div className="view-flow"><div className="section-lead"><h2>{t.language}</h2></div><div className="group-list">{[['hans','简体中文'],['hant','繁體中文']].map(([id,title])=><button className="language-card" key={id} onClick={()=>setLang(id)}><span>🌐</span><b>{title}</b><span>{lang===id?'✓':'　'}</span></button>)}</div></div>}
+function LanguageSettings({lang,languageMode,setLanguageMode,deviceLanguage,locale}){
+ const t=I18N[lang],autoLabel=lang==='hans'?'跟随设备语言':'跟隨裝置語言';
+ const displayed=deviceLanguage==='hans'?'简体中文':'繁體中文';
+ const options=[['auto',autoLabel,locale+' · '+displayed],['hans','简体中文',''],['hant','繁體中文','']];
+ return <div className="view-flow"><div className="section-lead"><h2>{t.language}</h2><p>{lang==='hans'?'默认跟随设备，手动选择后会保持该语言。':'預設跟隨裝置，手動選擇後會保留該語言。'}</p></div>
+ <div className="group-list">{options.map(([id,title,sub])=><button type="button" className="language-card" key={id} aria-pressed={languageMode===id} onClick={()=>setLanguageMode(id)}>
+ <span>{id==='auto'?'📱':'🌐'}</span><span style={{display:'grid',textAlign:'start',gap:4}}><b>{title}</b>{sub&&<small>{sub}</small>}</span><span>{languageMode===id?'✓':'　'}</span></button>)}</div>
+ <p className="minor-copy">{lang==='hans'?'当前仅支持简体、繁体中文；其他设备语言暂用繁体中文。':'目前僅支援繁體、簡體中文；其他裝置語言暫用繁體中文。'}</p></div>
+}
 function Backup({lang,toast}){const t=I18N[lang];const input=useRef(null);const exportBackup=()=>{const entries={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k?.startsWith('ylg-'))entries[k]=localStorage.getItem(k)}}catch{}download('banana-backup-'+TODAY()+'.json',new Blob([JSON.stringify({app:'banana-care',schema:1,exportedAt:new Date().toISOString(),entries},null,2)],{type:'application/json'}));toast(t.saved)};const importBackup=async(e)=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>2*1024*1024)throw Error('size');const data=JSON.parse(await file.text());if(data.app!=='banana-care'||data.schema!==1||!data.entries||typeof data.entries!=='object'||Array.isArray(data.entries)||Object.entries(data.entries).some(([k,v])=>!k.startsWith('ylg-')||typeof v!=='string'||v.length>250000))throw Error('invalid');if(!window.confirm(t.importConfirm))return;for(const [k,v] of Object.entries(data.entries))localStorage.setItem(k,v);toast(t.importDone);setTimeout(()=>window.location.reload(),600)}catch{toast(t.importError,'error')}finally{e.target.value=''}};return <div className="view-flow"><div className="section-lead"><h2>{t.backup}</h2></div><div className="group-list"><GroupCard emoji="📤" title={t.export} onClick={exportBackup}/><GroupCard emoji="📥" title={t.import} onClick={()=>input.current?.click()}/></div><input type="file" ref={input} hidden accept=".json,application/json" onChange={importBackup}/><p className="minor-copy">{HELP[lang].backup.join(' ')}</p></div>}
 async function copyUrl(){try{await navigator.clipboard.writeText(SITE_URL);return true}catch{const e=document.createElement('textarea');e.value=SITE_URL;document.body.appendChild(e);e.select();const result=document.execCommand('copy');e.remove();return result}}
 function Install({lang,name,toast}){const t=I18N[lang];const share=async()=>{if(navigator.share){try{await navigator.share({title:name+' · '+t.app,text:t.shareText,url:SITE_URL});return}catch(e){if(e.name==='AbortError')return}}const ok=await copyUrl();toast(ok?t.copied:t.error,ok?'success':'error')};return <div className="view-flow"><div className="section-lead"><h2>{t.install}</h2></div><div className="install-cover"><img src="./icons/banana-192.png" alt="Banana" /><strong>{name} · {t.app}</strong><small>PWA · iPhone</small></div><div className="install-buttons"><button onClick={share}>↗ {t.share}</button><button onClick={async()=>toast(await copyUrl()?t.copied:t.error)}>🔗 {t.copy}</button></div><div className="info-card"><h3>📱 {t.installAction}</h3>{t.installSteps.map((row,i)=><div className="install-step" key={i}><span>{i+1}</span><div><b>{row[0]}</b><p>{row[1]}</p></div></div>)}</div></div>}
-export function App(){const [lang,setLang]=useRaw('ylg-language','hans'),[name,setName]=useRaw('ylg-name','香蕉'),[birth,setBirth]=useRaw('ylg-birth',''),[schedule,setSchedule]=usePersist('ylg-feed-schedule-v1',DEFAULT_SCHEDULE),[view,setView]=useState(()=>{const key=location.hash.replace('#','');return PAGES.includes(key)?key:'home'}),[menu,setMenu]=useState(false),[help,setHelp]=useState(false),[toast,show]=useToast(),[date,setDate]=useState(TODAY),[feed,setFeed]=usePersist('ylg-feed-'+date,{}),[checked,setChecked]=usePersist('ylg-check-'+date,[]),[notes,setNotes]=usePersist('ylg-notes',[]),[cloudCred,setCloudCred]=useState(readCredentials);const display=name.trim()||'香蕉',safeLang=lang==='hant'?'hant':'hans',t=I18N[safeLang],scroller=useRef(null),lastMain=useRef('home');
+export function App(){const [languageMode,setLanguageMode]=useRaw('ylg-language','auto'),[locale,setLocale]=useState(deviceLocale),[name,setName]=useRaw('ylg-name','香蕉'),[birth,setBirth]=useRaw('ylg-birth',''),[schedule,setSchedule]=usePersist('ylg-feed-schedule-v1',DEFAULT_SCHEDULE),[view,setView]=useState(()=>{const key=location.hash.replace('#','');return PAGES.includes(key)?key:'home'}),[menu,setMenu]=useState(false),[help,setHelp]=useState(false),[toast,show]=useToast(),[date,setDate]=useState(TODAY),[feed,setFeed]=usePersist('ylg-feed-'+date,{}),[checked,setChecked]=usePersist('ylg-check-'+date,[]),[notes,setNotes]=usePersist('ylg-notes',[]),[cloudCred,setCloudCred]=useState(readCredentials);const display=name.trim()||'香蕉',safeLang=resolveLanguage(languageMode,locale),t=I18N[safeLang],scroller=useRef(null),lastMain=useRef('home');
+const deviceLanguage=resolveLanguage('auto',locale);
+useEffect(()=>{
+ if(languageMode!=='auto')return;
+ const update=()=>setLocale(previous=>{const value=deviceLocale();return value===previous?previous:value});
+ update();
+ window.addEventListener('languagechange',update);
+ window.addEventListener('pageshow',update);
+ window.addEventListener('focus',update);
+ document.addEventListener('visibilitychange',update);
+ return()=>{
+  window.removeEventListener('languagechange',update);
+  window.removeEventListener('pageshow',update);
+  window.removeEventListener('focus',update);
+  document.removeEventListener('visibilitychange',update);
+ };
+},[languageMode]);
 const navigate=useCallback(next=>{if(!PAGES.includes(next))return;history.pushState({},'','#'+next);setView(next);setHelp(false);setMenu(false)},[]);
 useEffect(()=>{const onBack=()=>{const k=location.hash.replace('#','');setView(PAGES.includes(k)?k:'home')};window.addEventListener('popstate',onBack);window.addEventListener('hashchange',onBack);return()=>{window.removeEventListener('popstate',onBack);window.removeEventListener('hashchange',onBack)}},[]);
 useEffect(()=>{if(MAIN.includes(view))lastMain.current=view;scroller.current?.scrollTo({top:0,behavior:'instant'});},[view]);
@@ -135,6 +160,10 @@ const submitChange=useCallback(job=>{
  queueChange(job);
  syncPending(cloudCred).catch(()=>{});
 },[cloudCred?.accountId,cloudCred?.accessKey]);
+useEffect(()=>{
+ if(!cloudCred||!backendReady())return;
+ submitChange({kind:'account',patch:{language:safeLang}});
+},[safeLang,cloudCred?.accountId,cloudCred?.accessKey,submitChange]);
 const markFeed=useCallback((slot,done)=>{
  const completedAt=done?new Date().toISOString():null;
  setFeed(previous=>{
@@ -159,5 +188,5 @@ const updateFeedingTime=useCallback((slot,time)=>{
 },[updateReminderTimes]);
 
 const safeChecked=Array.isArray(checked)?checked.filter(x=>Number.isInteger(x)&&x>=0&&x<6):[];const count=Math.min(6,new Set(safeChecked).size)+['morning','evening'].filter(id=>!!feed[id]).length;
-let body;if(view==='home')body=<Home lang={safeLang} name={display} count={count} feed={feed} schedule={schedule} navigate={navigate}/>;else if(view==='guide')body=<GuideHome lang={safeLang} navigate={navigate}/>;else if(GUIDE.some(x=>x[0]===view))body=<Topic page={view} lang={safeLang}/>;else if(view==='growth')body=<Growth lang={safeLang}/>;else if(view==='journal')body=<Journal lang={safeLang} dateKey={date} feed={feed} onMarkFeed={markFeed} onChangeSchedule={updateFeedingTime} checked={safeChecked} setChecked={setChecked} notes={Array.isArray(notes)?notes:[]} setNotes={setNotes} schedule={schedule} toast={show}/>;else if(view==='settings')body=<Settings lang={safeLang} navigate={navigate}/>;else if(view==='pet')body=<PetSettings lang={safeLang} name={display} setName={setName} birth={birth} setBirth={setBirth} toast={show} onNameCommit={saveRemoteName}/>;else if(view==='reminders')body=<ReminderSettings lang={safeLang} name={display} schedule={schedule} setSchedule={updateReminderTimes} toast={show}/>;else if(view==='language')body=<LanguageSettings lang={safeLang} setLang={setLang}/>;else if(view==='backup')body=<Backup lang={safeLang} toast={show}/>;else if(view==='install')body=<Install lang={safeLang} name={display} toast={show}/>;else if(view==='cloud')body=<CloudPage lang={safeLang} name={display} schedule={schedule} feed={feed} credentials={cloudCred} onConnected={setCloudCred} onDisconnected={()=>setCloudCred(null)} onRemoteState={hydrateCloud} toast={show}/>;
+let body;if(view==='home')body=<Home lang={safeLang} name={display} count={count} feed={feed} schedule={schedule} navigate={navigate}/>;else if(view==='guide')body=<GuideHome lang={safeLang} navigate={navigate}/>;else if(GUIDE.some(x=>x[0]===view))body=<Topic page={view} lang={safeLang}/>;else if(view==='growth')body=<Growth lang={safeLang}/>;else if(view==='journal')body=<Journal lang={safeLang} dateKey={date} feed={feed} onMarkFeed={markFeed} onChangeSchedule={updateFeedingTime} checked={safeChecked} setChecked={setChecked} notes={Array.isArray(notes)?notes:[]} setNotes={setNotes} schedule={schedule} toast={show}/>;else if(view==='settings')body=<Settings lang={safeLang} navigate={navigate}/>;else if(view==='pet')body=<PetSettings lang={safeLang} name={display} setName={setName} birth={birth} setBirth={setBirth} toast={show} onNameCommit={saveRemoteName}/>;else if(view==='reminders')body=<ReminderSettings lang={safeLang} name={display} schedule={schedule} setSchedule={updateReminderTimes} toast={show}/>;else if(view==='language')body=<LanguageSettings lang={safeLang} languageMode={languageMode} setLanguageMode={setLanguageMode} deviceLanguage={deviceLanguage} locale={locale}/>;else if(view==='backup')body=<Backup lang={safeLang} toast={show}/>;else if(view==='install')body=<Install lang={safeLang} name={display} toast={show}/>;else if(view==='cloud')body=<CloudPage lang={safeLang} name={display} schedule={schedule} feed={feed} credentials={cloudCred} onConnected={setCloudCred} onDisconnected={()=>setCloudCred(null)} onRemoteState={hydrateCloud} toast={show}/>;
 return <div className="app-shell"><Toast toast={toast}/><Drawer open={menu} close={()=>setMenu(false)} navigate={navigate} lang={safeLang} name={display}/><header className="app-header"><div className="header-start">{MAIN.includes(view)?<button className="icon-button menu-trigger" aria-label={safeLang==='hans'?'打开菜单':'開啟選單'} onClick={()=>setMenu(true)}>☰</button>:<button className="icon-button menu-trigger" aria-label={t.back} onClick={()=>navigate(lastMain.current)}>‹</button>}<span className="header-bird">🐤</span><div className="header-copy"><strong>{view==='home'?display+' · '+t.app:titleFor(view,t)}</strong><small>Banana Care · v{V}</small></div></div><button type="button" className="icon-button help-trigger" onClick={()=>setHelp(true)} aria-label={t.help} aria-haspopup="dialog">?</button></header><main className="app-scroller" ref={scroller} key={view}>{body}</main><nav className="app-tabs" aria-label="Main navigation">{NAV.map(([page,emoji],i)=><button key={page} type="button" className={view===page||((!MAIN.includes(view))&&(page===lastMain.current))?'selected':''} aria-current={view===page?'page':undefined} onClick={()=>navigate(page)}><span>{emoji}</span><small>{t.tab[i]}</small></button>)}</nav>{help&&<HelpModal view={view} lang={safeLang} close={()=>setHelp(false)}/>}</div>}

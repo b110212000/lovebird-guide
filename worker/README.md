@@ -1,6 +1,6 @@
 # 香蕉養鳥手冊：個人後端 MVP（Cloudflare Workers）
 
-**部署狀態（2026-10-13）：使用者已回報 Cloudflare Workers Builds 首次部署成功。** GitHub 後端與 React UI 原始碼已完成；尚需將 Cloudflare 顯示的**實際 Worker 網址**填入 React `src/cloud-config.js` 才會啟用雲端功能。這個 Worker 與 MLB Worker 完全獨立。
+**部署狀態（2026-10-13）：Cloudflare Workers Builds 已由使用者回報部署成功，React 也已將實際網址 `https://banana-care-api.b110212000.workers.dev` 寫入 `src/cloud-config.js`。** 真實的帳戶／iPhone 背景推播仍需要實機驗證。這個 Worker 與 MLB Worker 完全獨立。
 
 ## 架構
 
@@ -131,3 +131,12 @@ Worker 的瀏覽器 CORS 限定 `https://b110212000.github.io`，但**CORS 不�
 使用 Workers Free 計畫、SQLite-backed Durable Objects 與 GitHub Pages，少量朋友使用預計可保持免費，但應留意官方用量上限。正式提供給陌生使用者前需要加上建帳濫用防護（如 Turnstile／Rate Limiting）、資料刪除與帳號金鑰輪替功能，並訂出簡短隱私說明。初版依賴復原碼，**不是完整的多裝置身份系統**。
 
 本 Worker 為個人養鳥後端，**與 MLB score notify 完全獨立**。
+
+## v2.5.1 推播語言
+
+建立帳戶時可傳入 `language: "hant" | "hans"`（未傳入時預設繁體）；`PATCH /api/account` 也可隨著 React 的裝置語言或使用者手動設定更新 `language`，帳戶狀態回傳 `language`。
+
+- 繁體時送出「餵食提醒／時間到了，記得確認飼料與清水」。
+- 簡體時送出「喂食提醒／时间到了，记得检查饲料和清水」。
+- 舊帳戶沒有 `language` 欄位時以繁體相容，不需要重新註冊。
+- 初版每個帳戶只有單一推播訂閱，所以**通知語言跟隨帳戶最後同步的語言**，不是依所有裝置分別設定；若未來支援同帳戶多裝置通知需改為訂閱層級儲存語言。

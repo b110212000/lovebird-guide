@@ -36,3 +36,9 @@
 .install-cover{display:flex;align-items:center;flex-direction:column;gap:5px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:19px}.install-cover img{width:80px;height:80px;object-fit:cover;border-radius:18px}.install-cover strong{font-size:21px}.install-cover small{color:#889586}
 .install-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}.install-buttons button{padding:12px 8px;background:#eaf4e7;color:#3f7750;font-weight:800;min-height:49px;border:1px solid #dcead7;border-radius:13px}.install-step{display:grid;grid-template-columns:34px 1fr;gap:10px;margin:17px 0}.install-step>span{width:34px;height:34px;display:grid;place-items:center;border-radius:12px;background:#ffefc1;color:#8d6c30;font-weight:900}.install-step b{font-size:16px}.install-step p{font-size:15px;margin:2px 0 0}
 @media(max-width:480px){.app-scroller{padding:16px 13px 28px}.app-header{padding-left:12px;padding-right:12px}.header-copy strong{font-size:17px}.icon-button{width:40px;min-width:40px;height:40px}.home-greeting{padding:18px 14px}.hello-bird{width:54px;height:57px;font-size:35px}.home-greeting h2{font-size:27px}.home-actions{gap:8px}.home-actions .group-card{padding:11px 8px}.home-actions .group-copy b{font-size:15px}.home-actions .group-emoji{width:37px;height:37px}.home-actions .chev{display:none}.task-row{padding:12px 9px}.task-button{font-size:13px;padding:8px}}
+
+/* Device language preference: highlight active choice and wrap locale description */
+.language-card>span:nth-child(2){flex:1;min-width:0}
+.language-card>span:nth-child(2) small{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.language-card[aria-pressed="true"]{border-color:#a8d6ac;background:#f5fcf4}
+.language-card[aria-pressed="true"]>span:last-child{color:#397946;font-weight:900;font-size:21px}

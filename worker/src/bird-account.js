@@ -11,6 +11,10 @@ function validateTimezone(timezone){
   if(typeof timezone!=='string'||timezone.length>80)throw new Error('INVALID_TIMEZONE');
   try{new Intl.DateTimeFormat('en-US',{timeZone:timezone}).format(new Date());return timezone}catch{throw new Error('INVALID_TIMEZONE')}
 }
+function validateLanguage(language){
+ if(language!=='hant'&&language!=='hans')throw new Error('INVALID_LANGUAGE');
+ return language;
+}
 function validateName(name){
   if(typeof name!=='string'||!name.trim()||name.trim().length>32||/[\u0000-\u001f\u007f]/.test(name))throw new Error('INVALID_NAME');
   return name.trim();
@@ -67,7 +71,7 @@ export class BirdAccount extends DurableObject{
     const input=await safeBody(req);
     if(typeof input.accessKey!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(input.accessKey))return json({error:'INVALID_KEY'},400);
     const state={tokenHash:await hexSha256(input.accessKey),name:validateName(input.name),timezone:validateTimezone(input.timezone),
-      times:{...DEFAULT_TIMES},notificationsEnabled:false,subscription:null,lastSent:{},createdAt:new Date().toISOString()};
+      language:validateLanguage(input.language||'hant'),times:{...DEFAULT_TIMES},notificationsEnabled:false,subscription:null,lastSent:{},createdAt:new Date().toISOString()};
     await this.ctx.storage.put('state',state);
     return json({account:this.publicAccount(state)},201);
    }
@@ -85,6 +89,7 @@ export class BirdAccount extends DurableObject{
     const input=await safeBody(req);
     if(Object.hasOwn(input,'name'))state.name=validateName(input.name);
     if(Object.hasOwn(input,'timezone'))state.timezone=validateTimezone(input.timezone);
+    if(Object.hasOwn(input,'language'))state.language=validateLanguage(input.language);
     if(Object.hasOwn(input,'times')){
       if(!input.times||typeof input.times!=='object'||Array.isArray(input.times))return json({error:'INVALID_TIMES'},400);
       for(const id of SLOT_IDS)if(Object.hasOwn(input.times,id)){
@@ -150,7 +155,7 @@ export class BirdAccount extends DurableObject{
    return json({error:/^INVALID_|^PAYLOAD_TOO_LARGE/.test(message)?message:'INTERNAL_ERROR'},/^INVALID_|^PAYLOAD_TOO_LARGE/.test(message)?400:500);
   }
  }
- publicAccount(s){return {name:s.name,timezone:s.timezone,times:s.times,notificationsEnabled:s.notificationsEnabled,subscriptionActive:!!s.subscription,createdAt:s.createdAt}}
+ publicAccount(s){return {name:s.name,timezone:s.timezone,language:s.language||'hant',times:s.times,notificationsEnabled:s.notificationsEnabled,subscriptionActive:!!s.subscription,createdAt:s.createdAt}}
  async scheduleNext(state){
    const when=nextDue(state);
    if(when)await this.ctx.storage.setAlarm(when);
@@ -167,11 +172,14 @@ export class BirdAccount extends DurableObject{
     if(state.lastSent[mark])continue;
     const feed=await this.ctx.storage.get('feed:'+today)||{};
     if(feed[id])continue;
+    const hans=state.language==='hans';
     const label=id==='morning'?'早上':'晚上';
+    const title=state.name+(hans?' · 喂食提醒':' · 餵食提醒');
+    const message=label+(hans?'时间到了，记得检查饲料和清水。':'時間到了，記得確認飼料與清水。');
     try{
       const stub=this.env.PUSH_SERVICE.get(this.env.PUSH_SERVICE.idFromName('global'));
       const result=await stub.fetch('https://internal/send',{method:'POST',body:JSON.stringify({subscription:state.subscription,
-       payload:{title:state.name+' · 餵食提醒',body:label+'時間到了，記得確認飼料與清水。',url:this.env.APP_URL||'https://b110212000.github.io/lovebird-guide/#journal',tag:'banana-'+today+'-'+id}})});
+       payload:{title,body:message,url:this.env.APP_URL||'https://b110212000.github.io/lovebird-guide/#journal',tag:'banana-'+today+'-'+id}})});
       const status=await result.json();
       if(status.ok)state.lastSent[mark]=new Date().toISOString();
       else if(status.expired){state.subscription=null;state.notificationsEnabled=false}
