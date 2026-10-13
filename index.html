@@ -199,7 +199,7 @@ const dateKey = () => {const n=new Date();return `${n.getFullYear()}-${String(n.
 const formattedDate = (date) => new Intl.DateTimeFormat(UI[lang].dateLocale,{month:'short',day:'numeric',year:'numeric'}).format(date);
 function drawStatic(){
   const t=UI[lang],d=CONTENT[lang];
-  if(typeof drawPwaLabels==='function' && document.getElementById('pwaBackupTitle'))drawPwaLabels();
+  if(document.documentElement.dataset.pwaReady==='true')drawPwaLabels();
   document.documentElement.lang=lang==='hant'?'zh-Hant':'zh-Hans';
   document.title=lang==='hant'?'香蕉的生活手冊｜牡丹鸚鵡新手飼養指南':'香蕉的养鸟手册｜牡丹鹦鹉新手饲养指南';
   document.querySelectorAll('[data-i18n]').forEach(e=>{const value=t[e.dataset.i18n]??'';if(value.includes('<em>'))e.innerHTML=value;else e.textContent=value;});
@@ -327,6 +327,7 @@ if('serviceWorker' in navigator){
     }catch(_){/* App continues normally without service worker. */}
   });
 }
+document.documentElement.dataset.pwaReady='true';
 drawPwaLabels();
 
 </script>
