@@ -6,18 +6,31 @@ on:
       - "worker/**"
       - ".github/workflows/validate-banana-worker.yml"
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: worker
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install backend dependencies
+      - name: Install backend dependencies and generate lockfile
+        working-directory: worker
         run: npm install --no-audit --no-fund
-      - name: Validate Cloudflare Worker bundle without deploying
+      - name: Validate Worker bundle (never deploy from GitHub Actions)
+        working-directory: worker
         run: npx wrangler deploy --dry-run --outdir ./dist
+      - name: Save package-lock.json for Cloudflare Workers Builds
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add worker/package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "build: lock Banana Worker dependencies for Cloudflare Builds"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
