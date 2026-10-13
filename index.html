@@ -25,7 +25,7 @@
 /* Keep ornamental hero shapes from causing sideways scrolling on narrow screens. */
 .hero-art{overflow:clip}
 
-/* v2.1.0 — iPhone PWA safe-area + backup/update controls */
+/* v2.2.0 — iPhone PWA safe-area + backup/update controls */
 .topbar{padding-top:env(safe-area-inset-top);height:calc(70px + env(safe-area-inset-top))}
 .sidebar{padding-top:max(30px,env(safe-area-inset-top));padding-bottom:max(22px,env(safe-area-inset-bottom))}
 .page-inner{padding-bottom:calc(22px + env(safe-area-inset-bottom))}
@@ -43,7 +43,7 @@
 @media(max-width:600px){.pwa-backup{padding:15px}.pwa-update{font-size:11px}}
 
 
-/* v2.1.0 iPhone-first app interface - larger type, safe areas, tab navigation */
+/* v2.2.0 iPhone-first app interface - larger type, safe areas, tab navigation */
 :root{--app-bg:#fff8e9;--app-ink:#29312a;--app-muted:#647168;--app-yellow:#ffcf55;--app-outline:#eee8d9;--app-green:#42694f;--app-radius:24px}
 html{scroll-behavior:auto;scroll-padding-top:110px}
 body{background:linear-gradient(180deg,#fff9e9 0%,#f5f8f0 60%,#fff9e9 100%);color:var(--app-ink);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%;overflow-x:clip}
@@ -128,7 +128,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 @media(prefers-reduced-motion:reduce){.app-tab,.app-hub-card{transition:none}}
 
 
-/* v2.1.0: on-device care reminders and iPhone installation guide */
+/* v2.2.0: on-device care reminders and iPhone installation guide */
 .feed-home-card{display:flex;gap:14px;align-items:center;padding:18px 19px;margin:18px 0 12px;border-radius:23px;background:linear-gradient(110deg,#e8f6e7,#fff8dc);border:1px solid #d6e8d1;box-shadow:0 8px 22px #4b7a4a16;min-height:94px}
 .site-shell[data-page="home"] .page-inner>.feed-home-card{display:flex!important}
 .feed-home-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:18px;background:white;font-size:29px;flex-shrink:0}
@@ -167,6 +167,48 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .install-share-actions .primary-button{font-size:16px}
 @media(max-width:500px){.feed-panel{padding:16px}.feed-home-card{padding:15px}.feed-home-content strong{font-size:17px}.feed-slot{padding:13px}.feed-slot-name{font-size:16px}.feed-slot-input{max-width:116px}.feed-actions{grid-template-columns:1fr}.install-card{padding:19px}.install-share-actions{grid-template-columns:1fr}.feed-head h3{font-size:21px}}
 
+
+/* v2.2.0 compact iPhone screens & Settings */
+body{overflow-x:clip;overscroll-behavior-x:none}
+.topbar.app-titlebar{justify-content:flex-start;gap:12px}.app-menu-left{position:static!important;display:grid!important;place-items:center;order:0;width:46px;min-width:46px;height:46px}.app-titlebar .app-top-info{flex:1;min-width:0}.app-titlebar .top-actions{display:none!important}
+.site-shell[data-page="home"] .page-inner>.app-actions,.site-shell[data-page="home"] .page-inner>.marquee-note,.site-shell[data-page="home"] .page-inner>.quick-section{display:none!important}
+.app-home-view{display:block!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;min-height:unset!important}
+.app-home-view>.hero-copy,.app-home-view>.hero-art{display:none!important}
+.home-intro{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:22px 20px;background:linear-gradient(125deg,#fff3cd,#fffaf0);border:1px solid #f1e5c5;border-radius:23px}
+.home-intro>div{flex:1;min-width:0}.home-intro span:first-child{font-size:14px;color:#937224;font-weight:750}.home-intro h1{font-size:clamp(26px,5vw,35px);line-height:1.25;margin:7px 0;font-weight:850}.home-intro p{font-size:15px;color:#7d836f;margin:0}
+.home-bird{width:76px;height:76px;flex:none;display:grid;place-items:center;border-radius:24px;background:#ffe48c;font-size:46px}
+.home-stats{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:14px 0 12px;padding:20px;background:#fff;border:1px solid #e5eadd;border-radius:21px}
+.home-stats>div:first-child{display:grid;gap:3px}.home-stats small{font-size:14px;color:#768978}.home-stats strong{font-size:31px;color:#416f4b;line-height:1.25}
+.home-meter{--p:0%;width:82px;height:82px;flex:none;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#69b27a var(--p),#eef3eb 0)}.home-meter:before{content:"";position:absolute;inset:10px;background:white;border-radius:50%}.home-meter span{position:relative;font-weight:800;color:#426d49;font-size:17px}
+.home-entry{display:grid;grid-template-columns:1fr 1fr;gap:10px}.home-entry a{background:#fff;border:1px solid #e9eee4;border-radius:17px;padding:17px 13px;display:flex;align-items:center;gap:9px;min-height:68px}.home-entry strong{font-size:17px;flex:1}.home-entry span{font-size:23px}
+.feed-home-card{margin-top:13px;box-shadow:none}
+.site-shell[data-page="more"] .page-footer{display:none!important}
+.compact-settings{display:grid;gap:11px;max-width:720px;margin:0 auto}
+.compact-settings>h2{font-size:31px;margin:0}.compact-settings>p{color:#72816f;margin:-4px 0 10px;font-size:15px}
+.settings-screen>.app-section-head,.settings-screen>.app-more-card,.settings-screen>.app-more-links,.settings-screen>.app-more-note{display:none!important}
+.compact-group,.compact-setting-link{background:#fff;border:1px solid #e5ebdf;border-radius:18px;overflow:hidden;box-shadow:0 5px 17px #4c674a12}
+.compact-group summary,.compact-setting-link{display:flex;align-items:center;gap:14px;min-height:73px;padding:13px 16px;list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.compact-group summary::-webkit-details-marker{display:none}.compact-group summary::marker{content:""}
+.compact-group summary>span:first-child,.compact-setting-link>span:first-child{width:46px;height:46px;flex:none;display:grid;place-items:center;border-radius:15px;background:#f0f7ed;font-size:24px}
+.compact-group summary>div,.compact-setting-link>div{flex:1;min-width:0}.compact-group strong,.compact-setting-link strong{display:block;font-size:18px}.compact-group small,.compact-setting-link small{display:block;font-size:14px;color:#879487;margin-top:2px}
+.compact-group summary>i,.compact-setting-link>i{font-size:24px;color:#95a394;font-style:normal}
+.compact-group[open] summary>i{transform:rotate(180deg)}
+.compact-group-body{display:grid;gap:15px;padding:17px;border-top:1px solid #edf1ea}
+.compact-group-body .profile-card,.compact-group-body .pwa-backup{padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.compact-group-body .profile-card label{font-size:16px}.compact-group-body .profile-card input{font-size:17px;min-height:46px}
+.compact-group-body .app-lang-pills{margin:0;display:grid;grid-template-columns:1fr 1fr}
+.setting-time-row{display:flex;gap:8px;align-items:center;justify-content:space-between;font-weight:650;font-size:17px}
+.setting-time-row input{max-width:145px;min-width:130px;padding:8px;border-radius:12px;background:#f9fcf6;border:1px solid #e3eadc;font-size:17px}
+.setting-calendar-button{font-size:16px;font-weight:800;background:#e7f3e5;color:#3d7847;border-radius:14px;border:1px solid #d2e6cf;min-height:49px}
+.setting-hint{margin:0;font-size:14px;color:#718273;line-height:1.75}
+.feed-slot-input{display:none!important}.feed-slot-row{gap:10px}.feed-slot-name{font-size:18px}
+.journal-left{display:block}.journal-left .note-card{margin:0}
+.page-inner>.app-greeting{display:none}.site-shell[data-page="home"] .page-inner>.app-greeting{display:flex}
+.age-tabs{-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}.age-tab{scroll-snap-align:start}
+.app-hub-grid{-webkit-overflow-scrolling:touch}
+@media(max-width:600px){.home-intro{padding:19px 16px}.home-intro h1{font-size:27px}.home-bird{width:65px;height:65px;font-size:40px}.home-stats{padding:18px}.home-meter{width:75px;height:75px}.compact-group summary,.compact-setting-link{padding:12px 14px}.compact-group-body{padding:15px}.app-titlebar{padding-inline:13px}}
+@media(max-width:360px){.home-entry{grid-template-columns:1fr}.home-bird{width:52px;height:52px;font-size:32px}}
+
 </style>
   
 </head>
@@ -193,19 +235,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
           <button type="button" class="language-btn selected" id="langHant" aria-pressed="true">繁體</button>
           <button type="button" class="language-btn" id="langHans" aria-pressed="false">简体</button>
         </div>
-        <span class="side-version">v2.1.0 · GitHub Pages Ready</span>
+        <span class="side-version">v2.2.0 · GitHub Pages Ready</span>
       </div>
     </aside>
 
     <main class="main-content">
-      <header class="topbar">
+      <header class="topbar app-titlebar">
+        <button type="button" class="mobile-nav-toggle app-menu-left" id="mobileNavToggle" aria-controls="sidebar" aria-expanded="false" aria-label="打开目录">☰</button>
         <div class="app-top-info"><span class="app-header-avatar" aria-hidden="true">🐤</span><span><strong data-i18n="brand">香蕉的生活手冊</strong><small id="appHeaderSubtitle">养鸟首页</small></span></div>
-        <div class="top-actions"><button type="button" class="mobile-lang" id="mobileLang" aria-label="切換語言" title="繁體 / 简体">文/A</button><button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-controls="sidebar" aria-expanded="false" aria-label="開啟選單">☰</button></div>
+        <div class="top-actions"><button type="button" class="mobile-lang" id="mobileLang" aria-label="切換語言" hidden>文/A</button></div>
       </header>
 
       <div class="page-inner">
         <div class="app-greeting"><span class="app-greeting-pill">🐣 BANANA CARE</span><span id="appGreetingDate"></span></div>
-        <section id="home" class="hero anchor-section is-current">
+        <section id="home" class="hero anchor-section is-current app-home-view">
+ <div class="home-intro"><div><span id="petHomeKicker">今日照顾</span><h1 id="petHomeTitle">香蕉，今天怎么样？</h1><p id="petHomeDesc">先完成今天的照顾任务。</p></div><span class="home-bird">🐥</span></div>
+ <div class="home-stats"><div><small id="homeStatTitle">今日完成</small><strong id="homeStatCount">0 / 8</strong><small id="homeStatDesc">喂食确认 + 每日检查</small></div><div class="home-meter" id="homeMeter"><span id="homePercent">0%</span></div></div>
+ <div class="home-entry"><a href="#journal"><span>✅</span><strong id="homeCheckButton">去打卡</strong><span>›</span></a><a href="#guide"><span>📖</span><strong id="homeGuideButton">养鸟指南</strong><span>›</span></a></div>
           <div class="hero-copy">
             <div class="eyebrow"><span>✳</span> <span data-i18n="heroBadge">FOR FIRST-TIME BIRD PARENTS</span></div>
             <h1 data-i18n-html="heroTitle">香蕉回家了！<br><em>一起學著好好照顧牠。</em></h1>
@@ -322,7 +368,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   </div>
 </section>
 
-<section id="more" class="anchor-section app-more-screen">
+<section id="more" class="anchor-section app-more-screen"><div class="compact-settings">
+ <h2 id="compactSettingsTitle">设置</h2><p id="compactSettingsDesc">按功能分类调整</p>
+ <details class="compact-group" open><summary><span>🐤</span><div><strong id="settingBirdTitle">小鸟资料</strong><small id="settingBirdSub">名称、生日和月龄</small></div><i>⌄</i></summary><div class="compact-group-body" id="birdProfileMount"></div></details>
+ <details class="compact-group"><summary><span>🔔</span><div><strong id="settingFeedTitle">喂食提醒</strong><small id="settingFeedSub">时间和重复通知</small></div><i>⌄</i></summary><div class="compact-group-body">
+ <label class="setting-time-row"><span id="settingAmText">早上检查</span><input type="time" id="settingAm" value="08:00"></label>
+ <label class="setting-time-row"><span id="settingPmText">晚上检查</span><input type="time" id="settingPm" value="18:00"></label>
+ <button type="button" class="setting-calendar-button" id="settingCalendar"><span id="settingCalendarText">📅 导出 iPhone 提醒</span></button>
+ <p class="setting-hint" id="settingFeedHint">App 关闭后，请使用 iPhone 日历或提醒事项通知。</p>
+ </div></details>
+ <details class="compact-group"><summary><span>🌐</span><div><strong id="settingLangTitle">语言</strong><small id="settingLangSub">简体 / 繁體</small></div><i>⌄</i></summary><div class="compact-group-body" id="languageMount"></div></details>
+ <details class="compact-group"><summary><span>💾</span><div><strong id="settingBackupTitle">本地备份</strong><small id="settingBackupSub">导入和导出记录</small></div><i>⌄</i></summary><div class="compact-group-body" id="backupMount"></div></details>
+ <a href="#install" class="compact-setting-link"><span>📱</span><div><strong id="settingInstallTitle">安装及分享</strong><small id="settingInstallSub">iPhone 安装教程</small></div><i>›</i></a>
+ <a href="#health" class="compact-setting-link"><span>🩺</span><div><strong id="settingHealthTitle">健康警示</strong><small id="settingHealthSub">生病时的注意事项</small></div><i>›</i></a>
+</div>
   <div class="app-section-head"><span class="app-eyebrow">MORE & SETTINGS</span><h2 id="moreTitle">更多与设置</h2><p id="moreSubtitle">语言、百科、健康提示与资料备份。</p></div>
   <div class="app-more-card">
     <div class="app-more-item"><span class="app-more-icon">🌐</span><span><strong id="moreLanguageTitle">显示语言</strong><small id="moreLanguageDesc">可以随时切换简体或繁体</small></span></div>
@@ -338,7 +397,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   <p id="moreOfflineNote" class="app-more-note">🔒 打卡与日记保存在此设备。换手机或重装 App 前，请先前往每日打卡页面导出备份。</p>
 </section>
 
-        <footer class="page-footer"><div><span class="footer-flower">🐤</span><strong data-i18n="footerBrand">香蕉的生活手冊</strong><p data-i18n="footerMessage">一份給第一次養牡丹鸚鵡的你，溫柔但認真的照顧筆記。</p></div><div class="footer-right"><span>v2.1.0 · 2026</span><span data-i18n="footerDisclaimer">僅供衛教參考，不能取代鳥類獸醫。</span><a href="#home" data-i18n="backTop">回到頂端 ↑</a></div></footer>
+        <footer class="page-footer"><div><span class="footer-flower">🐤</span><strong data-i18n="footerBrand">香蕉的生活手冊</strong><p data-i18n="footerMessage">一份給第一次養牡丹鸚鵡的你，溫柔但認真的照顧筆記。</p></div><div class="footer-right"><span>v2.2.0 · 2026</span><span data-i18n="footerDisclaimer">僅供衛教參考，不能取代鳥類獸醫。</span><a href="#home" data-i18n="backTop">回到頂端 ↑</a></div></footer>
       </div>
     </main>
     <nav class="app-tabbar" aria-label="主要分頁">
@@ -346,13 +405,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
       <a class="app-tab" data-app-tab="guide" href="#guide"><span aria-hidden="true">📖</span><small id="tabGuide">指南</small></a>
       <a class="app-tab" data-app-tab="growth" href="#growth"><span aria-hidden="true">🌱</span><small id="tabGrowth">月龄</small></a>
       <a class="app-tab" data-app-tab="journal" href="#journal"><span aria-hidden="true">✅</span><small id="tabJournal">打卡</small></a>
-      <a class="app-tab" data-app-tab="more" href="#more"><span aria-hidden="true">⚙️</span><small id="tabMore">更多</small></a>
+      <a class="app-tab" data-app-tab="more" href="#more"><span aria-hidden="true">⚙️</span><small id="tabMore">设置</small></a>
   </nav>
   </div>
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="pwa-update" id="pwaUpdate" hidden role="status"><span id="pwaUpdateText"></span><button type="button" id="pwaReload"></button></div>
 <script>
-/* Yellow Lovebird Guide v2.1.0 — vanilla JS, GitHub Pages ready. */
+/* Yellow Lovebird Guide v2.2.0 — vanilla JS, GitHub Pages ready. */
 'use strict';
 const LANGS = ['hant', 'hans'];
 const UI = {
@@ -401,13 +460,16 @@ let activeAge = 2;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dateKey = () => {const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;};
 const formattedDate = (date) => new Intl.DateTimeFormat(UI[lang].dateLocale,{month:'short',day:'numeric',year:'numeric'}).format(date);
+function petName(){return (safelyGet('ylg-name','')||'').trim()||'香蕉';}
+function petText(s){return String(s).replaceAll('香蕉',petName());}
+function petHTML(s){return String(s).replaceAll('香蕉',esc(petName()));}
 function drawStatic(){
   const t=UI[lang],d=CONTENT[lang];
   if(document.documentElement.dataset.pwaReady==='true')drawPwaLabels();
   document.documentElement.lang=lang==='hant'?'zh-Hant':'zh-Hans';
-  document.title=lang==='hant'?'香蕉的生活手冊｜牡丹鸚鵡新手飼養指南':'香蕉的养鸟手册｜牡丹鹦鹉新手饲养指南';
-  document.querySelectorAll('[data-i18n]').forEach(e=>{const value=t[e.dataset.i18n]??'';if(value.includes('<em>'))e.innerHTML=value;else e.textContent=value;});
-  document.querySelectorAll('[data-i18n-html]').forEach(e=>{e.innerHTML=t[e.dataset.i18nHtml]??'';});
+  document.title=petText(lang==='hant'?'香蕉的生活手冊｜牡丹鸚鵡新手飼養指南':'香蕉的养鸟手册｜牡丹鹦鹉新手饲养指南');
+  document.querySelectorAll('[data-i18n]').forEach(e=>{const value=t[e.dataset.i18n]??'';if(value.includes('<em>'))e.innerHTML=petHTML(value);else e.textContent=petText(value);});
+  document.querySelectorAll('[data-i18n-html]').forEach(e=>{e.innerHTML=petHTML(t[e.dataset.i18nHtml]??'');});
   document.querySelectorAll('[data-i18n-placeholder]').forEach(e=>{e.placeholder=t[e.dataset.i18nPlaceholder]??'';});
   $('langHant').classList.toggle('selected',lang==='hant');$('langHans').classList.toggle('selected',lang==='hans');
   $('langHant').setAttribute('aria-pressed',String(lang==='hant'));$('langHans').setAttribute('aria-pressed',String(lang==='hans'));
@@ -535,16 +597,16 @@ document.documentElement.dataset.pwaReady='true';
 drawPwaLabels();
 
 
-/* v2.1.0: App-style screen navigation while preserving existing guide and local records. */
+/* v2.2.0: App-style screen navigation while preserving existing guide and local records. */
 const APP_PAGES=['home','guide','arrival','food','growth','behavior','environment','health','journal','knowledge','install','more'];
 const APP_LANG={
-hans:{home:'首页',guide:'指南',growth:'月龄',journal:'打卡',more:'更多',hubTitle:'新手养鸟攻略',hubSub:'从刚接回家到每天喂养，想了解什么就点进去看。',moreTitle:'更多与设置',moreSub:'语言、百科、健康提示与记录备份。',language:'显示语言',languageDesc:'可以随时切换简体或繁体',backup:'照顾记录与备份',offline:'🔒 打卡和日记保存在这台设备里。换手机或重装 App 前，请先到每日打卡导出备份。',arrival:'第一周怎么相处',food:'吃什么 · 不能吃什么',behavior:'看懂香蕉的小动作',environment:'鸟笼 · 睡眠 · 出笼',health:'哪些情况要找兽医',wiki:'百科资料和参考来源',actionChecklist:'今日打卡',actionChecklistDesc:'饮水、喂食、观察状态',actionGuide:'养鸟小课堂',actionGuideDesc:'新手重点随时查看',actionAge:'月龄成长',actionAgeDesc:'不同年龄的照顾重点',date:'zh-CN'},
-hant:{home:'首頁',guide:'指南',growth:'月齡',journal:'打卡',more:'更多',hubTitle:'新手養鳥指南',hubSub:'從剛到家到每天餵食，想了解什麼就點進去看。',moreTitle:'更多與設定',moreSub:'語言、百科、健康提醒與紀錄備份。',language:'顯示語言',languageDesc:'可以隨時切換繁體或簡體',backup:'照顧紀錄與備份',offline:'🔒 打卡與日誌儲存在這台裝置。換手機或重新安裝 App 前，請先至每日打卡匯出備份。',arrival:'第一週如何相處',food:'吃什麼 · 不能吃什麼',behavior:'看懂香蕉的小動作',environment:'鳥籠 · 睡眠 · 放風',health:'哪些情況要找獸醫',wiki:'百科資料與參考來源',actionChecklist:'今日打卡',actionChecklistDesc:'飲水、餵食、觀察狀態',actionGuide:'養鳥小教室',actionGuideDesc:'新手重點隨時查看',actionAge:'月齡成長',actionAgeDesc:'不同年齡的照顧重點',date:'zh-TW'}
+hans:{home:'首页',guide:'指南',growth:'月龄',journal:'打卡',more:'设置',hubTitle:'新手养鸟攻略',hubSub:'从刚接回家到每天喂养，想了解什么就点进去看。',moreTitle:'更多与设置',moreSub:'语言、百科、健康提示与记录备份。',language:'显示语言',languageDesc:'可以随时切换简体或繁体',backup:'照顾记录与备份',offline:'🔒 打卡和日记保存在这台设备里。换手机或重装 App 前，请先到每日打卡导出备份。',arrival:'第一周怎么相处',food:'吃什么 · 不能吃什么',behavior:'看懂香蕉的小动作',environment:'鸟笼 · 睡眠 · 出笼',health:'哪些情况要找兽医',wiki:'百科资料和参考来源',actionChecklist:'今日打卡',actionChecklistDesc:'饮水、喂食、观察状态',actionGuide:'养鸟小课堂',actionGuideDesc:'新手重点随时查看',actionAge:'月龄成长',actionAgeDesc:'不同年龄的照顾重点',date:'zh-CN'},
+hant:{home:'首頁',guide:'指南',growth:'月齡',journal:'打卡',more:'設定',hubTitle:'新手養鳥指南',hubSub:'從剛到家到每天餵食，想了解什麼就點進去看。',moreTitle:'更多與設定',moreSub:'語言、百科、健康提醒與紀錄備份。',language:'顯示語言',languageDesc:'可以隨時切換繁體或簡體',backup:'照顧紀錄與備份',offline:'🔒 打卡與日誌儲存在這台裝置。換手機或重新安裝 App 前，請先至每日打卡匯出備份。',arrival:'第一週如何相處',food:'吃什麼 · 不能吃什麼',behavior:'看懂香蕉的小動作',environment:'鳥籠 · 睡眠 · 放風',health:'哪些情況要找獸醫',wiki:'百科資料與參考來源',actionChecklist:'今日打卡',actionChecklistDesc:'飲水、餵食、觀察狀態',actionGuide:'養鳥小教室',actionGuideDesc:'新手重點隨時查看',actionAge:'月齡成長',actionAgeDesc:'不同年齡的照顧重點',date:'zh-TW'}
 };
 const APP_FIELDS={tabHome:'home',tabGuide:'guide',tabGrowth:'growth',tabJournal:'journal',tabMore:'more',guideHubTitle:'hubTitle',guideHubSubtitle:'hubSub',moreTitle:'moreTitle',moreSubtitle:'moreSub',moreLanguageTitle:'language',moreLanguageDesc:'languageDesc',moreBackup:'backup',moreOfflineNote:'offline',hubArrival:'arrival',hubFood:'food',hubBehavior:'behavior',hubHome:'environment',hubHealth:'health',hubWiki:'wiki',actionChecklist:'actionChecklist',actionChecklistDesc:'actionChecklistDesc',actionGuide:'actionGuide',actionGuideDesc:'actionGuideDesc',actionAge:'actionAge',actionAgeDesc:'actionAgeDesc'};
 function updateAppLabels(){
   const t=APP_LANG[lang];
-  for(const [id,key] of Object.entries(APP_FIELDS)){const node=document.getElementById(id);if(node)node.textContent=t[key];}
+  for(const [id,key] of Object.entries(APP_FIELDS)){const node=document.getElementById(id);if(node)node.textContent=petText(t[key]);}
   const tag=document.getElementById('appGreetingDate');
   if(tag)tag.textContent=new Intl.DateTimeFormat(t.date,{month:'long',day:'numeric',weekday:'short'}).format(new Date());
   document.querySelectorAll('[data-app-lang]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.appLang===lang);btn.setAttribute('aria-pressed',String(btn.dataset.appLang===lang));});
@@ -565,7 +627,7 @@ function updateAppNav(scroll){
   const heading=document.getElementById('appHeaderSubtitle');
   const labels=UI[lang];
   const names={home:APP_LANG[lang].home,guide:APP_LANG[lang].guide,growth:APP_LANG[lang].growth,journal:APP_LANG[lang].journal,more:APP_LANG[lang].more,install:(lang==='hant'?'iPhone 安裝教學':'iPhone 安装教程'),arrival:labels.navArrival,food:labels.navFood,behavior:labels.navBehavior,environment:labels.navEnvironment,health:labels.navHealth,knowledge:labels.navKnowledge};
-  if(heading)heading.textContent=names[page];
+  if(heading)heading.textContent=petText(names[page]);
   if(scroll){window.scrollTo({top:0,behavior:'instant'});closeNav();}
 }
 window.addEventListener('hashchange',()=>updateAppNav(true));
@@ -576,7 +638,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateAppL
 updateAppLabels();
 
 
-/* v2.1.0 feeding checks, exportable phone-calendar reminders, and installation sharing. */
+/* v2.2.0 feeding checks, exportable phone-calendar reminders, and installation sharing. */
 const FEED_TEXT={
  hans:{title:'香蕉的喂食提醒',sub:'自定义每天检查时间，确认补充食物后打勾。',morning:'早上检查饲料',evening:'晚上检查饲料',checked:'已确认检查／补充饲料',doneAt:'完成时间',time:'检查时间',done:'今天两个时段都确认完成啦！',due:'该检查香蕉的饲料啦：',next:'下一次检查：',waiting:'今天的喂食检查还没开始',homeTitle:'别忘了给香蕉检查食物哦',homeProgress:'今天已确认',homeComplete:'今天的喂食检查都完成啦！',safety:'注意：已断奶的健康牡丹鹦鹉应持续获得适量完整主食及清水。这里的时间是提醒你检查、补充与观察，不是限制喂食次数；未断奶幼鸟必须按兽医指导喂养。',cal:'导出 iPhone 每日提醒',copy:'复制提醒时间',help:'App 关闭后无法靠网页本身准时提醒。可将 .ics 文件导入 iPhone 日历并确认通知，或在“提醒事项”中按这些时间手动设置每天重复提醒。iOS 是否能直接导入 .ics 取决于系统和打开方式。',calReady:'已生成日历文件，请在 iPhone 上确认导入与提醒设置。',copied:'时间已经复制，可以粘贴到“提醒事项”里。',copyFailed:'无法自动复制，请直接按照上面显示的时间设置。',noDue:'下一个提醒',install:'iPhone 安装教程与分享'},
  hant:{title:'香蕉的餵食提醒',sub:'自訂每天檢查時間，確認補充食物後打勾。',morning:'早上檢查飼料',evening:'晚上檢查飼料',checked:'已確認檢查／補充飼料',doneAt:'完成時間',time:'檢查時間',done:'今天兩個時段都確認完成囉！',due:'該檢查香蕉的飼料囉：',next:'下一次檢查：',waiting:'今天的餵食檢查還沒開始',homeTitle:'別忘了幫香蕉檢查食物',homeProgress:'今天已確認',homeComplete:'今天的餵食檢查都完成了！',safety:'注意：已斷奶的健康牡丹鸚鵡應持續獲得適量完整主食與清水。這裡的時間是提醒你檢查、補充和觀察，不是限制餵食次數；未斷奶幼鳥必須依鳥類獸醫指示餵養。',cal:'匯出 iPhone 每日提醒',copy:'複製提醒時間',help:'App 關閉後無法只靠網頁準時提醒。可將 .ics 檔匯入 iPhone 行事曆並確認通知，或在「提醒事項」手動設定每日重複提醒。iOS 能否直接匯入 .ics 會依系統及開啟方式而異。',calReady:'已產生行事曆檔，請在 iPhone 上確認匯入及提醒設定。',copied:'時間已複製，可貼到「提醒事項」中。',copyFailed:'無法自動複製，請依上面顯示的時間自行設定。',noDue:'下次提醒',install:'iPhone 安裝教學與分享'}
@@ -615,7 +677,7 @@ function timeForUser(date){
  return new Intl.DateTimeFormat(lang==='hans'?'zh-CN':'zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}).format(date);
 }
 function renderFeeding(){
- const t=FEED_TEXT[lang],cfg=feedSchedule(),records=feedRecords(),now=new Date(),todayMinutes=now.getHours()*60+now.getMinutes();
+ const t=Object.fromEntries(Object.entries(FEED_TEXT[lang]).map(([k,v])=>[k,typeof v==='string'?petText(v):v])),cfg=feedSchedule(),records=feedRecords(),now=new Date(),todayMinutes=now.getHours()*60+now.getMinutes();
  const due=[],upcoming=[];
  $('feedTitle').textContent=t.title;$('feedSubtitle').textContent=t.sub;$('feedFoodSafety').textContent=t.safety;$('feedCalendarText').textContent=t.cal;
  $('feedCopyText').textContent=t.copy;$('feedCalendarHelp').textContent=t.help;$('feedHomeTitle').textContent=t.homeTitle;
@@ -658,7 +720,7 @@ function escapeIcs(value){
  return String(value).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
 }
 function buildFeedCalendar(){
- const t=FEED_TEXT[lang],cfg=feedSchedule(),now=new Date(),name=lang==='hans'?'香蕉养鸟':'香蕉養鳥';
+ const t=FEED_TEXT[lang],cfg=feedSchedule(),now=new Date(),name=petName()+(lang==='hans'?' · 养鸟提醒':' · 養鳥提醒');
  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Banana Bird Care//Daily Feeding Reminder//ZH','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:'+escapeIcs(name)];
  for(const id of FEED_IDS){
   const hh=Number(cfg[id].slice(0,2)),mm=Number(cfg[id].slice(3,5));
@@ -692,11 +754,11 @@ $('feedCopyTimes').addEventListener('click',async()=>{
 });
 function installShareURL(){return new URL('./',location.href).href;}
 function installStepHtml(steps){
- return steps.map((step,i)=>'<div class="install-step"><span class="install-step-no">'+(i+1)+'</span><div><strong>'+esc(step[0])+'</strong><p>'+esc(step[1])+'</p></div></div>').join('');
+ return steps.map((step,i)=>'<div class="install-step"><span class="install-step-no">'+(i+1)+'</span><div><strong>'+esc(petText(step[0]))+'</strong><p>'+esc(petText(step[1]))+'</p></div></div>').join('');
 }
 function renderInstallHelp(){
  const t=INSTALL_TEXT[lang];
- $('installTitle').textContent=t.title;$('installLead').textContent=t.lead;$('installGuideTitle').textContent=t.guide;
+ $('installTitle').textContent=petText(t.title);$('installLead').textContent=t.lead;$('installGuideTitle').textContent=t.guide;
  $('installSteps').innerHTML=installStepHtml(t.steps);
  $('installFootnote').textContent=t.foot;
  $('appTutorialTitle').textContent=t.usage;$('appTutorialSteps').innerHTML=installStepHtml(t.usageSteps);
@@ -709,7 +771,7 @@ $('installCopyBtn').addEventListener('click',async()=>{
 $('installShareBtn').addEventListener('click',async()=>{
  const t=INSTALL_TEXT[lang];
  if(navigator.share){
-  try{await navigator.share({title:t.title,text:t.shareText,url:installShareURL()});return;}
+  try{await navigator.share({title:t.title,text:petText(t.shareText),url:installShareURL()});return;}
   catch(err){if(err?.name==='AbortError')return;}
  }
  $('installShareStatus').textContent=(await copyUsefulText(installShareURL()))?t.copied:t.copyFail;
@@ -723,6 +785,71 @@ window.addEventListener('focus',redrawNewScreens);
 setInterval(()=>{if(!document.hidden&&!document.activeElement?.matches('.feed-slot-input'))renderFeeding();},60000);
 // The backup importer preserves all 'ylg-' keys, including schedule and checked times.
 redrawNewScreens();
+
+
+/* v2.2.0 small-screen App UI, categorized settings and reactive pet name. */
+const SETTING_WORDS={
+ hans:{title:'设置',desc:'按功能分类，需要什么再打开。',bird:'小鸟资料',birdSub:'名字、生日、月龄',feed:'喂食提醒',feedSub:'时间、日历通知',am:'早上检查',pm:'晚上检查',calendar:'📅 导出每天的提醒',feedHint:'App 关闭后，需使用 iPhone 日历或提醒事项设置系统通知。',language:'语言',langSub:'简体 / 繁體',backup:'本地备份',backupSub:'导入、导出记录',install:'安装和分享',installSub:'iPhone 安装教程',health:'健康警示',healthSub:'生病时要注意什么',kicker:'今天也要照顾好小鸟',home:'香蕉，今天怎么样？',homeDesc:'先完成最重要的任务。',stat:'今天完成',statDesc:'喂食确认 + 每日检查',check:'去打卡',guide:'养鸟指南'},
+ hant:{title:'設定',desc:'依功能分類，需要時再打開。',bird:'小鳥資料',birdSub:'名字、生日、月齡',feed:'餵食提醒',feedSub:'時間、行事曆通知',am:'早上檢查',pm:'晚上檢查',calendar:'📅 匯出每日提醒',feedHint:'App 關閉後，需透過 iPhone 行事曆或提醒事項設定系統通知。',language:'語言',langSub:'繁體 / 簡體',backup:'本機備份',backupSub:'匯入、匯出紀錄',install:'安裝與分享',installSub:'iPhone 安裝教學',health:'健康警示',healthSub:'生病時要注意什麼',kicker:'今天也要照顧好小鳥',home:'香蕉，今天好嗎？',homeDesc:'先完成今天最重要的任務。',stat:'今日完成',statDesc:'餵食確認 + 每日檢查',check:'去打卡',guide:'養鳥指南'}
+};
+const SETTING_IDS={compactSettingsTitle:'title',compactSettingsDesc:'desc',settingBirdTitle:'bird',settingBirdSub:'birdSub',settingFeedTitle:'feed',settingFeedSub:'feedSub',settingAmText:'am',settingPmText:'pm',settingCalendarText:'calendar',settingFeedHint:'feedHint',settingLangTitle:'language',settingLangSub:'langSub',settingBackupTitle:'backup',settingBackupSub:'backupSub',settingInstallTitle:'install',settingInstallSub:'installSub',settingHealthTitle:'health',settingHealthSub:'healthSub',petHomeKicker:'kicker',petHomeTitle:'home',petHomeDesc:'homeDesc',homeStatTitle:'stat',homeStatDesc:'statDesc',homeCheckButton:'check',homeGuideButton:'guide'};
+function mountSettingContent(){
+ for(const [selector,mount] of [['.journal-left .profile-card','birdProfileMount'],['#more > .app-more-card .app-lang-pills','languageMount'],['.pwa-backup','backupMount']]){
+  const item=document.querySelector(selector);if(item)$(mount).appendChild(item);
+ }
+}
+function redrawHomeProgress(){
+ const raw=safeParse(safelyGet('ylg-check-'+dateKey(),'[]'),[]);
+ const completed=(Array.isArray(raw)?new Set(raw.filter(x=>Number.isInteger(x)&&x>=0&&x<6)).size:0)+FEED_IDS.filter(id=>!!feedRecords()[id]).length;
+ $('homeStatCount').textContent=completed+' / 8';
+ const percent=Math.round(completed/8*100);
+ $('homePercent').textContent=percent+'%';$('homeMeter').style.setProperty('--p',percent+'%');
+}
+function renderSettings(){
+ const t=SETTING_WORDS[lang];
+ for(const [id,key] of Object.entries(SETTING_IDS))$(id).textContent=petText(t[key]);
+ const name=petName();
+ const header=document.querySelector('.app-top-info strong');
+ if(header)header.textContent=name+(lang==='hans'?'的养鸟手册':'的養鳥手冊');
+ const cfg=feedSchedule();
+ if(document.activeElement!==$('settingAm'))$('settingAm').value=cfg.morning;
+ if(document.activeElement!==$('settingPm'))$('settingPm').value=cfg.evening;
+ redrawHomeProgress();
+}
+for(const [input,key] of [['settingAm','morning'],['settingPm','evening']]){
+ $(input).addEventListener('change',e=>{
+  if(!validTime(e.target.value))return;
+  const cfg=feedSchedule();cfg[key]=e.target.value;
+  safelySet(FEED_CONFIG_KEY,JSON.stringify(cfg));renderFeeding();renderSettings();
+ });
+}
+$('settingCalendar').addEventListener('click',()=>$('feedExportCalendar').click());
+const oldUpdateAppLabels=updateAppLabels;
+updateAppLabels=function(){oldUpdateAppLabels();renderSettings();};
+$('birdName').addEventListener('input',()=>{
+ drawStatic();updateAppLabels();renderFeeding();renderInstallHelp();
+});
+$('dailyChecklist').addEventListener('change',redrawHomeProgress);
+const oldRenderFeeding=renderFeeding;
+renderFeeding=function(){oldRenderFeeding();redrawHomeProgress();};
+const baseInstall=renderInstallHelp;
+renderInstallHelp=function(){baseInstall();const title=$('installTitle');title.textContent=petText(title.textContent);};
+const MAIN_TABS=['home','guide','growth','journal','more'];
+let swipe=null;
+document.addEventListener('touchstart',e=>{
+ if(e.touches.length!==1||e.target.closest('a,button,input,textarea,select,label,summary,.age-tabs,.feed-slot,.app-lang-pills')){swipe=null;return;}
+ const page=location.hash.slice(1)||'home';if(!MAIN_TABS.includes(page)){swipe=null;return;}
+ swipe={x:e.touches[0].clientX,y:e.touches[0].clientY,page};
+},{passive:true});
+document.addEventListener('touchend',e=>{
+ if(!swipe||!e.changedTouches.length)return;
+ const old=swipe;swipe=null;
+ const dx=e.changedTouches[0].clientX-old.x,dy=e.changedTouches[0].clientY-old.y;
+ if(Math.abs(dx)<100||Math.abs(dy)>70||Math.abs(dx)<Math.abs(dy)*1.8)return;
+ const next=MAIN_TABS.indexOf(old.page)+(dx<0?1:-1);
+ if(next>=0&&next<MAIN_TABS.length)location.hash='#'+MAIN_TABS[next];
+},{passive:true});
+mountSettingContent();renderSettings();
 
 </script>
 </body>
