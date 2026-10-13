@@ -25,13 +25,14 @@
       }
     ]
   },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": [
-        "BirdAccount",
-        "PushService"
-      ]
+  "exports": {
+    "BirdAccount": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "PushService": {
+      "type": "durable-object",
+      "storage": "sqlite"
     }
-  ]
+  }
 }
