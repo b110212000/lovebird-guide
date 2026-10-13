@@ -25,7 +25,7 @@
 /* Keep ornamental hero shapes from causing sideways scrolling on narrow screens. */
 .hero-art{overflow:clip}
 
-/* v2.2.0 — iPhone PWA safe-area + backup/update controls */
+/* v2.2.1 — iPhone PWA safe-area + backup/update controls */
 .topbar{padding-top:env(safe-area-inset-top);height:calc(70px + env(safe-area-inset-top))}
 .sidebar{padding-top:max(30px,env(safe-area-inset-top));padding-bottom:max(22px,env(safe-area-inset-bottom))}
 .page-inner{padding-bottom:calc(22px + env(safe-area-inset-bottom))}
@@ -43,7 +43,7 @@
 @media(max-width:600px){.pwa-backup{padding:15px}.pwa-update{font-size:11px}}
 
 
-/* v2.2.0 iPhone-first app interface - larger type, safe areas, tab navigation */
+/* v2.2.1 iPhone-first app interface - larger type, safe areas, tab navigation */
 :root{--app-bg:#fff8e9;--app-ink:#29312a;--app-muted:#647168;--app-yellow:#ffcf55;--app-outline:#eee8d9;--app-green:#42694f;--app-radius:24px}
 html{scroll-behavior:auto;scroll-padding-top:110px}
 body{background:linear-gradient(180deg,#fff9e9 0%,#f5f8f0 60%,#fff9e9 100%);color:var(--app-ink);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%;overflow-x:clip}
@@ -128,7 +128,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 @media(prefers-reduced-motion:reduce){.app-tab,.app-hub-card{transition:none}}
 
 
-/* v2.2.0: on-device care reminders and iPhone installation guide */
+/* v2.2.1: on-device care reminders and iPhone installation guide */
 .feed-home-card{display:flex;gap:14px;align-items:center;padding:18px 19px;margin:18px 0 12px;border-radius:23px;background:linear-gradient(110deg,#e8f6e7,#fff8dc);border:1px solid #d6e8d1;box-shadow:0 8px 22px #4b7a4a16;min-height:94px}
 .site-shell[data-page="home"] .page-inner>.feed-home-card{display:flex!important}
 .feed-home-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:18px;background:white;font-size:29px;flex-shrink:0}
@@ -168,7 +168,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 @media(max-width:500px){.feed-panel{padding:16px}.feed-home-card{padding:15px}.feed-home-content strong{font-size:17px}.feed-slot{padding:13px}.feed-slot-name{font-size:16px}.feed-slot-input{max-width:116px}.feed-actions{grid-template-columns:1fr}.install-card{padding:19px}.install-share-actions{grid-template-columns:1fr}.feed-head h3{font-size:21px}}
 
 
-/* v2.2.0 compact iPhone screens & Settings */
+/* v2.2.1 compact iPhone screens & Settings */
 body{overflow-x:clip;overscroll-behavior-x:none}
 .topbar.app-titlebar{justify-content:flex-start;gap:12px}.app-menu-left{position:static!important;display:grid!important;place-items:center;order:0;width:46px;min-width:46px;height:46px}.app-titlebar .app-top-info{flex:1;min-width:0}.app-titlebar .top-actions{display:none!important}
 .site-shell[data-page="home"] .page-inner>.app-actions,.site-shell[data-page="home"] .page-inner>.marquee-note,.site-shell[data-page="home"] .page-inner>.quick-section{display:none!important}
@@ -209,6 +209,132 @@ body{overflow-x:clip;overscroll-behavior-x:none}
 @media(max-width:600px){.home-intro{padding:19px 16px}.home-intro h1{font-size:27px}.home-bird{width:65px;height:65px;font-size:40px}.home-stats{padding:18px}.home-meter{width:75px;height:75px}.compact-group summary,.compact-setting-link{padding:12px 14px}.compact-group-body{padding:15px}.app-titlebar{padding-inline:13px}}
 @media(max-width:360px){.home-entry{grid-template-columns:1fr}.home-bird{width:52px;height:52px;font-size:32px}}
 
+
+/* v2.2.1: true iOS app shell. Only content/side menu items scroll.
+   The header, drawer brand, drawer footer and bottom tab bar stay in place. */
+html,body{
+  width:100%;
+  height:100%;
+  height:100dvh;
+  overflow:hidden;
+  overscroll-behavior:none;
+}
+body{position:relative;margin:0}
+.site-shell{
+  position:relative;
+  display:block;
+  width:100%;
+  height:100%;
+  height:100dvh;
+  min-height:0;
+  overflow:hidden;
+}
+.main-content{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  height:100%;
+  min-height:0;
+  min-width:0;
+  margin:0 auto;
+  overflow:hidden;
+}
+.topbar.app-titlebar{
+  position:relative;
+  top:auto;
+  flex:0 0 auto;
+  height:auto;
+  min-height:calc(68px + env(safe-area-inset-top, 0px));
+  padding-top:calc(11px + env(safe-area-inset-top, 0px));
+  padding-bottom:11px;
+  z-index:35;
+  transform:none;
+  background:#fff9eef5;
+  border-bottom:1px solid #e8e9df;
+  touch-action:pan-x;
+}
+.page-inner{
+  flex:1 1 0;
+  min-height:0;
+  height:auto;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  padding-bottom:calc(132px + env(safe-area-inset-bottom,0px));
+  scrollbar-gutter:stable;
+}
+.sidebar{
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  height:100%;
+  height:100dvh;
+  min-height:0;
+  overflow:hidden;
+  overscroll-behavior:contain;
+  padding-top:calc(20px + env(safe-area-inset-top,0px));
+  padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  z-index:80;
+}
+.sidebar>.brand,
+.sidebar>.side-caption{
+  flex:0 0 auto;
+}
+.sidebar>.brand{
+  margin-bottom:19px;
+}
+.sidebar>#siteNav{
+  flex:1 1 0;
+  min-height:0;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  padding-bottom:12px;
+}
+.sidebar>.side-bottom{
+  flex:0 0 auto;
+  min-height:0;
+  max-height:37%;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  padding-top:12px;
+  border-top:1px solid #eff0e9;
+  background:#fffcf4;
+}
+.mobile-overlay.show{
+  position:fixed;
+  inset:0;
+  z-index:75;
+}
+.app-tabbar{
+  position:fixed;
+  z-index:60;
+}
+@media(max-width:640px){
+  .topbar.app-titlebar{
+    padding-left:max(13px,env(safe-area-inset-left,0px));
+    padding-right:max(13px,env(safe-area-inset-right,0px));
+    min-height:calc(67px + env(safe-area-inset-top,0px));
+  }
+  .page-inner{
+    padding-left:max(14px,env(safe-area-inset-left,0px));
+    padding-right:max(14px,env(safe-area-inset-right,0px));
+    scrollbar-gutter:auto;
+  }
+}
+@media (orientation:landscape) and (max-height:500px){
+  .sidebar>.side-bottom{max-height:31%}
+}
+
 </style>
   
 </head>
@@ -235,7 +361,7 @@ body{overflow-x:clip;overscroll-behavior-x:none}
           <button type="button" class="language-btn selected" id="langHant" aria-pressed="true">繁體</button>
           <button type="button" class="language-btn" id="langHans" aria-pressed="false">简体</button>
         </div>
-        <span class="side-version">v2.2.0 · GitHub Pages Ready</span>
+        <span class="side-version">v2.2.1 · GitHub Pages Ready</span>
       </div>
     </aside>
 
@@ -397,7 +523,7 @@ body{overflow-x:clip;overscroll-behavior-x:none}
   <p id="moreOfflineNote" class="app-more-note">🔒 打卡与日记保存在此设备。换手机或重装 App 前，请先前往每日打卡页面导出备份。</p>
 </section>
 
-        <footer class="page-footer"><div><span class="footer-flower">🐤</span><strong data-i18n="footerBrand">香蕉的生活手冊</strong><p data-i18n="footerMessage">一份給第一次養牡丹鸚鵡的你，溫柔但認真的照顧筆記。</p></div><div class="footer-right"><span>v2.2.0 · 2026</span><span data-i18n="footerDisclaimer">僅供衛教參考，不能取代鳥類獸醫。</span><a href="#home" data-i18n="backTop">回到頂端 ↑</a></div></footer>
+        <footer class="page-footer"><div><span class="footer-flower">🐤</span><strong data-i18n="footerBrand">香蕉的生活手冊</strong><p data-i18n="footerMessage">一份給第一次養牡丹鸚鵡的你，溫柔但認真的照顧筆記。</p></div><div class="footer-right"><span>v2.2.1 · 2026</span><span data-i18n="footerDisclaimer">僅供衛教參考，不能取代鳥類獸醫。</span><a href="#home" data-i18n="backTop">回到頂端 ↑</a></div></footer>
       </div>
     </main>
     <nav class="app-tabbar" aria-label="主要分頁">
@@ -411,7 +537,7 @@ body{overflow-x:clip;overscroll-behavior-x:none}
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="pwa-update" id="pwaUpdate" hidden role="status"><span id="pwaUpdateText"></span><button type="button" id="pwaReload"></button></div>
 <script>
-/* Yellow Lovebird Guide v2.2.0 — vanilla JS, GitHub Pages ready. */
+/* Yellow Lovebird Guide v2.2.1 — vanilla JS, GitHub Pages ready. */
 'use strict';
 const LANGS = ['hant', 'hans'];
 const UI = {
@@ -597,7 +723,7 @@ document.documentElement.dataset.pwaReady='true';
 drawPwaLabels();
 
 
-/* v2.2.0: App-style screen navigation while preserving existing guide and local records. */
+/* v2.2.1: App-style screen navigation while preserving existing guide and local records. */
 const APP_PAGES=['home','guide','arrival','food','growth','behavior','environment','health','journal','knowledge','install','more'];
 const APP_LANG={
 hans:{home:'首页',guide:'指南',growth:'月龄',journal:'打卡',more:'设置',hubTitle:'新手养鸟攻略',hubSub:'从刚接回家到每天喂养，想了解什么就点进去看。',moreTitle:'更多与设置',moreSub:'语言、百科、健康提示与记录备份。',language:'显示语言',languageDesc:'可以随时切换简体或繁体',backup:'照顾记录与备份',offline:'🔒 打卡和日记保存在这台设备里。换手机或重装 App 前，请先到每日打卡导出备份。',arrival:'第一周怎么相处',food:'吃什么 · 不能吃什么',behavior:'看懂香蕉的小动作',environment:'鸟笼 · 睡眠 · 出笼',health:'哪些情况要找兽医',wiki:'百科资料和参考来源',actionChecklist:'今日打卡',actionChecklistDesc:'饮水、喂食、观察状态',actionGuide:'养鸟小课堂',actionGuideDesc:'新手重点随时查看',actionAge:'月龄成长',actionAgeDesc:'不同年龄的照顾重点',date:'zh-CN'},
@@ -628,7 +754,7 @@ function updateAppNav(scroll){
   const labels=UI[lang];
   const names={home:APP_LANG[lang].home,guide:APP_LANG[lang].guide,growth:APP_LANG[lang].growth,journal:APP_LANG[lang].journal,more:APP_LANG[lang].more,install:(lang==='hant'?'iPhone 安裝教學':'iPhone 安装教程'),arrival:labels.navArrival,food:labels.navFood,behavior:labels.navBehavior,environment:labels.navEnvironment,health:labels.navHealth,knowledge:labels.navKnowledge};
   if(heading)heading.textContent=petText(names[page]);
-  if(scroll){window.scrollTo({top:0,behavior:'instant'});closeNav();}
+  if(scroll){const scroller=document.querySelector('.page-inner');if(scroller)scroller.scrollTop=0;closeNav();}
 }
 window.addEventListener('hashchange',()=>updateAppNav(true));
 document.querySelectorAll('.app-tab').forEach(tab=>tab.addEventListener('click',()=>{if(location.hash.slice(1)===tab.dataset.appTab)updateAppNav(true);}));
@@ -638,7 +764,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateAppL
 updateAppLabels();
 
 
-/* v2.2.0 feeding checks, exportable phone-calendar reminders, and installation sharing. */
+/* v2.2.1 feeding checks, exportable phone-calendar reminders, and installation sharing. */
 const FEED_TEXT={
  hans:{title:'香蕉的喂食提醒',sub:'自定义每天检查时间，确认补充食物后打勾。',morning:'早上检查饲料',evening:'晚上检查饲料',checked:'已确认检查／补充饲料',doneAt:'完成时间',time:'检查时间',done:'今天两个时段都确认完成啦！',due:'该检查香蕉的饲料啦：',next:'下一次检查：',waiting:'今天的喂食检查还没开始',homeTitle:'别忘了给香蕉检查食物哦',homeProgress:'今天已确认',homeComplete:'今天的喂食检查都完成啦！',safety:'注意：已断奶的健康牡丹鹦鹉应持续获得适量完整主食及清水。这里的时间是提醒你检查、补充与观察，不是限制喂食次数；未断奶幼鸟必须按兽医指导喂养。',cal:'导出 iPhone 每日提醒',copy:'复制提醒时间',help:'App 关闭后无法靠网页本身准时提醒。可将 .ics 文件导入 iPhone 日历并确认通知，或在“提醒事项”中按这些时间手动设置每天重复提醒。iOS 是否能直接导入 .ics 取决于系统和打开方式。',calReady:'已生成日历文件，请在 iPhone 上确认导入与提醒设置。',copied:'时间已经复制，可以粘贴到“提醒事项”里。',copyFailed:'无法自动复制，请直接按照上面显示的时间设置。',noDue:'下一个提醒',install:'iPhone 安装教程与分享'},
  hant:{title:'香蕉的餵食提醒',sub:'自訂每天檢查時間，確認補充食物後打勾。',morning:'早上檢查飼料',evening:'晚上檢查飼料',checked:'已確認檢查／補充飼料',doneAt:'完成時間',time:'檢查時間',done:'今天兩個時段都確認完成囉！',due:'該檢查香蕉的飼料囉：',next:'下一次檢查：',waiting:'今天的餵食檢查還沒開始',homeTitle:'別忘了幫香蕉檢查食物',homeProgress:'今天已確認',homeComplete:'今天的餵食檢查都完成了！',safety:'注意：已斷奶的健康牡丹鸚鵡應持續獲得適量完整主食與清水。這裡的時間是提醒你檢查、補充和觀察，不是限制餵食次數；未斷奶幼鳥必須依鳥類獸醫指示餵養。',cal:'匯出 iPhone 每日提醒',copy:'複製提醒時間',help:'App 關閉後無法只靠網頁準時提醒。可將 .ics 檔匯入 iPhone 行事曆並確認通知，或在「提醒事項」手動設定每日重複提醒。iOS 能否直接匯入 .ics 會依系統及開啟方式而異。',calReady:'已產生行事曆檔，請在 iPhone 上確認匯入及提醒設定。',copied:'時間已複製，可貼到「提醒事項」中。',copyFailed:'無法自動複製，請依上面顯示的時間自行設定。',noDue:'下次提醒',install:'iPhone 安裝教學與分享'}
@@ -787,7 +913,7 @@ setInterval(()=>{if(!document.hidden&&!document.activeElement?.matches('.feed-sl
 redrawNewScreens();
 
 
-/* v2.2.0 small-screen App UI, categorized settings and reactive pet name. */
+/* v2.2.1 small-screen App UI, categorized settings and reactive pet name. */
 const SETTING_WORDS={
  hans:{title:'设置',desc:'按功能分类，需要什么再打开。',bird:'小鸟资料',birdSub:'名字、生日、月龄',feed:'喂食提醒',feedSub:'时间、日历通知',am:'早上检查',pm:'晚上检查',calendar:'📅 导出每天的提醒',feedHint:'App 关闭后，需使用 iPhone 日历或提醒事项设置系统通知。',language:'语言',langSub:'简体 / 繁體',backup:'本地备份',backupSub:'导入、导出记录',install:'安装和分享',installSub:'iPhone 安装教程',health:'健康警示',healthSub:'生病时要注意什么',kicker:'今天也要照顾好小鸟',home:'香蕉，今天怎么样？',homeDesc:'先完成最重要的任务。',stat:'今天完成',statDesc:'喂食确认 + 每日检查',check:'去打卡',guide:'养鸟指南'},
  hant:{title:'設定',desc:'依功能分類，需要時再打開。',bird:'小鳥資料',birdSub:'名字、生日、月齡',feed:'餵食提醒',feedSub:'時間、行事曆通知',am:'早上檢查',pm:'晚上檢查',calendar:'📅 匯出每日提醒',feedHint:'App 關閉後，需透過 iPhone 行事曆或提醒事項設定系統通知。',language:'語言',langSub:'繁體 / 簡體',backup:'本機備份',backupSub:'匯入、匯出紀錄',install:'安裝與分享',installSub:'iPhone 安裝教學',health:'健康警示',healthSub:'生病時要注意什麼',kicker:'今天也要照顧好小鳥',home:'香蕉，今天好嗎？',homeDesc:'先完成今天最重要的任務。',stat:'今日完成',statDesc:'餵食確認 + 每日檢查',check:'去打卡',guide:'養鳥指南'}
