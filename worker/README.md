@@ -51,12 +51,12 @@ React PWA (GitHub Pages)
 
 ### 目前狀態與尚待完成
 
-- <escape>[x]</escape> 建立獨立的 `banana-care-api` Cloudflare Workers Builds 專案（使用者回報部署成功）。
-- <escape>[x]</escape> `worker/wrangler.jsonc` 設定 BirdAccount／PushService Durable Objects。
-- <escape>[x]</escape> `worker/package-lock.json` 已提交，Wrangler 乾跑打包檢查通過。
-- <escape>[ ]</escape> 取得並驗證 Cloudflare 實際 Worker URL 與 `/health`。
-- <escape>[ ]</escape> 將實際 Worker URL 寫入 `src/cloud-config.js`，啟用 React 雲端功能。
-- <escape>[ ]</escape> 在 iPhone PWA 實際測試帳戶建立、同步、推播權限及背景通知。
+- [x] 建立獨立的 `banana-care-api` Cloudflare Workers Builds 專案（使用者回報部署成功）。
+- [x] `worker/wrangler.jsonc` 設定 BirdAccount／PushService Durable Objects。
+- [x] `worker/package-lock.json` 已提交，Wrangler 乾跑打包檢查通過。
+- [ ] 取得並驗證 Cloudflare 實際 Worker URL 與 `/health`。
+- [ ] 將實際 Worker URL 寫入 `src/cloud-config.js`，啟用 React 雲端功能。
+- [ ] 在 iPhone PWA 實際測試帳戶建立、同步、推播權限及背景通知。
 
 ### GitHub 推送後會發生什麼？
 
