@@ -1,115 +1,108 @@
 import React,{useEffect,useMemo,useState} from 'react';
+import {CLOCK_RE,MAX_SLOTS,normalizeSlots,activeCount} from './feed-slots.js';
 
-export const CLOCK_RE=/^(?:[01]\d|2[0-3]):[0-5]\d$/;
-export const FEED_SLOTS=['morning','evening'];
-export const FALLBACK_TIMES={morning:'08:00',evening:'18:00'};
-const COPY={
-  hans:{
-    heading:'今天的喂食',subtitle:'选好时间，喂完点确认，自动记下实际时间',
-    scheduled:'计划喂食',actual:'实际完成',todo:'待喂食',upcoming:'未到时间',
-    soon:'快到时间',due:'该喂食了',completed:'已完成',doneButton:'✓ 已喂食',
-    markButton:'确认已喂',none:'今天都记录完成啦',next:'下次计划',overdue:'尚未确认',
-    saved:'喂食时间已保存',marked:'已记录实际喂食时间',reversed:'已取消本次喂食',
-    slot:['早上','晚上'],recent:'最近 7 天喂食记录',empty:'之前还没有记录',
-    help:'这里只显示当日的计划与完成情况，提醒方式请点右上角「?」。'
-  },
-  hant:{
-    heading:'今日餵食',subtitle:'選擇時間、餵完確認，便會自動記下實際時間',
-    scheduled:'預定餵食',actual:'實際完成',todo:'待餵食',upcoming:'尚未到時間',
-    soon:'快到時間',due:'該餵食囉',completed:'已完成',doneButton:'✓ 已餵食',
-    markButton:'確認已餵',none:'今天都完成紀錄了',next:'下次預定',overdue:'尚未確認',
-    saved:'餵食時間已儲存',marked:'已記錄實際餵食時間',reversed:'已取消這次餵食',
-    slot:['早上','晚上'],recent:'最近 7 天餵食紀錄',empty:'之前尚無紀錄',
-    help:'本頁只顯示今天的預定與完成紀錄，提醒方式可點右上角「?」。'
-  }
+const C={
+ hans:{title:'今日喂食',due:'该喂食啦',soon:'快到时间',future:'尚未到时间',done:'已完成',next:'下次喂食',
+  complete:'确认已喂',cancel:'✓ 已喂食',actual:'实际喂食',planned:'计划喂食',
+  add:'＋ 新增喂食时段',addDone:'已增加喂食时段',choose:'选择时间',save:'喂食时间已保存',
+  delete:'删除时段',confirmDelete:'确定删除这个时段？过去的喂食记录不会删除。',
+  min:'至少需要一个喂食时段',max:'最多设置 12 个时段',
+  completed:'已记录喂食时间',undone:'已取消本次喂食',history:'最近 7 天喂食记录',
+  empty:'之前没有记录',all:'今天所有时段都打卡了',
+  note:'喂食次数请按鸟儿年龄和健康情况，并依鸟类兽医指导调整。已断奶鸟的适当主食及饮水不应限为固定几餐。',
+  old:'旧时段',slot:i=>`第${i+1}餐`},
+ hant:{title:'今日餵食',due:'該餵食囉',soon:'快到時間',future:'尚未到時間',done:'已完成',next:'下次餵食',
+  complete:'確認已餵',cancel:'✓ 已餵食',actual:'實際餵食',planned:'預定餵食',
+  add:'＋ 新增餵食時段',addDone:'已新增餵食時段',choose:'選擇時間',save:'餵食時間已儲存',
+  delete:'刪除時段',confirmDelete:'確定刪除此時段？過去的餵食紀錄會保留。',
+  min:'至少需要一個餵食時段',max:'最多可設定 12 個時段',
+  completed:'已記錄實際餵食時間',undone:'已取消本次餵食',history:'最近 7 天餵食紀錄',
+  empty:'先前沒有紀錄',all:'今日所有時段都完成打卡了',
+  note:'餵食次數請依鳥兒年齡、健康狀況及鳥類獸醫建議調整。已斷奶鳥的適當主食與清水不應限為固定幾餐。',
+  old:'舊時段',slot:i=>`第${i+1}餐`}
 };
-function localDay(d){
- return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+export function shortClock(value,lang){
+ if(!value||!Number.isFinite(Date.parse(value)))return '';
+ return new Intl.DateTimeFormat(lang==='hans'?'zh-CN':'zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(value));
 }
-export function shortClock(timestamp,language){
- if(!timestamp||!Number.isFinite(Date.parse(timestamp)))return null;
- return new Intl.DateTimeFormat(language==='hans'?'zh-CN':'zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(timestamp));
+export function labelForSlot(id,slots,lang){
+ const locale=lang==='hans'?'hans':'hant',position=slots.findIndex(s=>s.id===id);
+ if(position>=0)return C[locale].slot(position);
+ if(id==='morning')return locale==='hans'?'早上':'早上';
+ if(id==='evening')return locale==='hans'?'晚上':'晚上';
+ return C[locale].old;
 }
-export function evaluateSlots(feed={},schedule={},now=new Date()){
+export function evaluateSlots(feed={},slots=[],now=new Date()){
  const minute=now.getHours()*60+now.getMinutes();
- return FEED_SLOTS.map((slot,i)=>{
-  const time=CLOCK_RE.test(schedule[slot]||'')?schedule[slot]:FALLBACK_TIMES[slot];
-  const at=Number(time.slice(0,2))*60+Number(time.slice(3,5));
-  const completedAt=typeof feed?.[slot]==='string'&&Number.isFinite(Date.parse(feed[slot]))?feed[slot]:null;
-  return {slot,index:i,time,scheduledMinute:at,completedAt,minutesRemaining:at-minute,
-    state:completedAt?'done':minute>=at?'due':at-minute<=30?'soon':'upcoming'};
+ return normalizeSlots(slots).map((slot,index)=>{
+  const scheduledMinute=Number(slot.time.slice(0,2))*60+Number(slot.time.slice(3,5));
+  const completedAt=typeof feed?.[slot.id]==='string'&&Number.isFinite(Date.parse(feed[slot.id]))?feed[slot.id]:null;
+  return {...slot,slot:slot.id,index,scheduledMinute,completedAt,
+   state:completedAt?'done':minute>=scheduledMinute?'due':scheduledMinute-minute<=30?'soon':'upcoming'};
  });
 }
-export function closestFeeding(feed,schedule,now){
- const slots=evaluateSlots(feed,schedule,now).filter(slot=>slot.state!=='done');
- return [...slots].sort((a,b)=>a.scheduledMinute-b.scheduledMinute)[0]||null;
-}
+export function closestFeeding(feed,slots,now){return evaluateSlots(feed,slots,now).find(s=>s.state!=='done')||null}
+function localDay(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
 function readHistory(dateKey){
- const output=[];
- const base=new Date(dateKey+'T12:00:00');
- if(!Number.isFinite(base.getTime()))return output;
+ const result=[],base=new Date(dateKey+'T12:00:00');
+ if(!Number.isFinite(base.getTime()))return result;
  for(let offset=1;offset<=7;offset++){
-  const d=new Date(base);
-  d.setDate(base.getDate()-offset);
-  const day=localDay(d);
+  const d=new Date(base);d.setDate(d.getDate()-offset);
+  const date=localDay(d);
   try{
-   const records=JSON.parse(localStorage.getItem('ylg-feed-'+day)||'{}');
-   if(records&&typeof records==='object'&&FEED_SLOTS.some(slot=>records[slot]))output.push({day,records});
+   const record=JSON.parse(localStorage.getItem('ylg-feed-'+date)||'{}');
+   if(record&&typeof record==='object'&&Object.values(record).some(Boolean))result.push({date,record});
   }catch{}
  }
- return output;
+ return result;
 }
-export function FeedingCheckIn({lang,dateKey,feed,schedule,onMarkFeed,onChangeSchedule,toast}){
- const c=COPY[lang==='hant'?'hant':'hans'];
+export function FeedingCheckIn({lang,dateKey,feed,slots,onMarkFeed,onChangeTime,onAddSlot,onDeleteSlot,toast}){
+ const c=C[lang==='hans'?'hans':'hant'];
  const [now,setNow]=useState(()=>new Date());
+ const [addTime,setAddTime]=useState('12:00');
  useEffect(()=>{
-  const tick=()=>setNow(new Date());
-  const timer=setInterval(tick,30000);
-  document.addEventListener('visibilitychange',tick);
-  window.addEventListener('focus',tick);
-  return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',tick);window.removeEventListener('focus',tick)};
+  const update=()=>setNow(new Date()),id=setInterval(update,30000);
+  document.addEventListener('visibilitychange',update);window.addEventListener('focus',update);
+  return()=>{clearInterval(id);document.removeEventListener('visibilitychange',update);window.removeEventListener('focus',update)};
  },[]);
- const slots=evaluateSlots(feed,schedule,now);
- const next=closestFeeding(feed,schedule,now);
- const count=slots.filter(x=>x.state==='done').length;
+ const items=evaluateSlots(feed,slots,now);
+ const done=activeCount(feed,slots);
+ const next=closestFeeding(feed,slots,now);
  const history=useMemo(()=>readHistory(dateKey),[dateKey,feed]);
- const change=(slot,time)=>{
-  if(!CLOCK_RE.test(time))return;
-  onChangeSchedule(slot,time);
-  toast(c.saved);
+ const saveTime=(id,v)=>{if(!CLOCK_RE.test(v))return;onChangeTime(id,v);toast(c.save)};
+ const mark=(item)=>{
+  const complete=item.state!=='done';
+  onMarkFeed(item.id,complete);
+  toast(complete?c.completed+' · '+shortClock(new Date().toISOString(),lang):c.undone);
  };
- const mark=(entry)=>{
-  const shouldMark=entry.state!=='done';
-  onMarkFeed(entry.slot,shouldMark);
-  const actual=shortClock(new Date().toISOString(),lang);
-  toast(shouldMark?c.marked+' · '+actual:c.reversed);
+ const add=()=>{
+  if(items.length>=MAX_SLOTS){toast(c.max,'error');return}
+  if(!CLOCK_RE.test(addTime))return;
+  onAddSlot(addTime);toast(c.addDone);
  };
- return <section className="feeding-app" aria-label={c.heading}>
-  <div className="feeding-summary">
-   <div><span className="feeding-kicker">🍽️ {c.heading}</span><strong>{count} / 2</strong></div>
-   <p>{count===2?'✅ '+c.none:next?(next.state==='due'?'🔔 '+c.due+' · ':'⏰ '+c.next+' · ')+c.slot[next.index]+' '+next.time:c.none}</p>
+ const remove=id=>{
+  if(items.length===1){toast(c.min,'error');return}
+  if(window.confirm(c.confirmDelete))onDeleteSlot(id);
+ };
+ return <section className="feeding-app" aria-label={c.title}>
+  <div className="feeding-summary"><div><span className="feeding-kicker">🍽️ {c.title}</span><strong>{done} / {items.length}</strong></div>
+   <p>{done===items.length?'✅ '+c.all:next?(next.state==='due'?'🔔 '+c.due:'⏰ '+c.next)+' · '+c.slot(next.index)+' '+next.time:c.all}</p>
   </div>
-  <div className="feeding-list">
-   {slots.map(entry=><article className={'feeding-card '+entry.state} key={entry.slot}>
-    <div className="feeding-card-top">
-     <span className="feeding-avatar">{entry.index?'🌙':'☀️'}</span>
-     <div className="feeding-heading"><strong>{c.slot[entry.index]}</strong><span className={'feeding-state '+entry.state}>{entry.state==='done'?'✓ '+c.completed:entry.state==='due'?'🔔 '+c.due:entry.state==='soon'?'⏳ '+c.soon:c.upcoming}</span></div>
-    </div>
-    <label className="feeding-time-line"><span>{c.scheduled}</span>
-     <input type="time" aria-label={c.slot[entry.index]+' '+c.scheduled} value={entry.time} onChange={e=>change(entry.slot,e.target.value)} />
-    </label>
-    {entry.state==='done'&&<div className="feeding-record"><span>✓ {c.actual}</span><strong>{shortClock(entry.completedAt,lang)}</strong></div>}
-    <button type="button" className={'feeding-check-button '+(entry.state==='done'?'done':'')} onClick={()=>mark(entry)}>
-     {entry.state==='done'?c.doneButton:c.markButton}
-    </button>
-   </article>)}
-  </div>
-  <details className="feeding-history">
-   <summary>📒 {c.recent}<span>⌄</span></summary>
-   <div>{history.length?history.map(({day,records})=><div key={day} className="feeding-history-row">
-    <strong>{day}</strong>
-    <span>{FEED_SLOTS.map((slot,i)=>records[slot]?c.slot[i]+' '+shortClock(records[slot],lang):null).filter(Boolean).join(' · ')}</span>
-   </div>):<p>{c.empty}</p>}</div>
+  <div className="feeding-list">{items.map(item=><article className={'feeding-card '+item.state} key={item.id}>
+   <div className="feeding-card-top">
+    <span className="feeding-avatar">{item.index===0?'🌅':item.index===items.length-1?'🌙':'🥣'}</span>
+    <div className="feeding-heading"><strong>{c.slot(item.index)}</strong><span className={'feeding-state '+item.state}>{item.state==='done'?'✓ '+c.done:item.state==='due'?'🔔 '+c.due:item.state==='soon'?'⏳ '+c.soon:c.future}</span></div>
+    <button type="button" className="feeding-remove" aria-label={c.delete+' '+c.slot(item.index)} onClick={()=>remove(item.id)}>✕</button>
+   </div>
+   <label className="feeding-time-line"><span>{c.planned}</span><input type="time" aria-label={c.slot(item.index)+' '+c.planned} value={item.time} onChange={e=>saveTime(item.id,e.target.value)}/></label>
+   {item.completedAt&&<div className="feeding-record"><span>✓ {c.actual}</span><strong>{shortClock(item.completedAt,lang)}</strong></div>}
+   <button type="button" className={'feeding-check-button '+(item.completedAt?'done':'')} onClick={()=>mark(item)}>{item.completedAt?c.cancel:c.complete}</button>
+  </article>)}</div>
+  <div className="feeding-add"><label>{c.choose}<input type="time" value={addTime} onChange={e=>setAddTime(e.target.value)} aria-label={c.choose}/></label>
+   <button type="button" disabled={items.length>=MAX_SLOTS} onClick={add}>{c.add}</button></div>
+  <details className="feeding-history"><summary>📒 {c.history}<span>⌄</span></summary>
+   <div>{history.length?history.map(({date,record})=><div className="feeding-history-row" key={date}><strong>{date}</strong><span>{Object.entries(record).filter(([,stamp])=>stamp).map(([slot,stamp])=>labelForSlot(slot,slots,lang)+' '+shortClock(stamp,lang)).join(' · ')}</span></div>):<p>{c.empty}</p>}</div>
   </details>
+  <p className="minor-copy">{c.note}</p>
  </section>;
 }

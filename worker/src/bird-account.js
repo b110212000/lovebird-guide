@@ -1,9 +1,7 @@
 import {DurableObject} from 'cloudflare:workers';
+import {VALID_TIME,SLOT_ID,DEFAULT_TIMES,legacySlots,currentSlots,validateSlots} from './meal-slots.js';
 
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json;charset=utf-8','cache-control':'no-store'}});
-const VALID_TIME=/^(?:[01]\d|2[0-3]):[0-5]\d$/;
-const SLOT_IDS=['morning','evening'];
-const DEFAULT_TIMES={morning:'08:00',evening:'18:00'};
 const enc=new TextEncoder();
 async function hexSha256(str){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',enc.encode(str)))].map(x=>x.toString(16).padStart(2,'0')).join('')}
 function sameHash(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;let v=0;for(let i=0;i<a.length;i++)v|=a.charCodeAt(i)^b.charCodeAt(i);return v===0}
@@ -42,9 +40,9 @@ function nextDue(state,now=Date.now()){
  if(!state.subscription||!state.notificationsEnabled)return null;
  const today=localComponents(now,state.timezone).date;
  const next=[];
- for(let day=0;day<4;day++)for(const id of SLOT_IDS){
+ for(let day=0;day<4;day++)for(const slot of currentSlots(state)){
   const date=shiftDate(today,day);
-  const target=localToEpoch(date,state.times[id],state.timezone);
+  const target=localToEpoch(date,slot.time,state.timezone);
   if(target!==null&&target>now+1000)next.push(target);
  }
  return next.length?Math.min(...next):null;
@@ -71,7 +69,7 @@ export class BirdAccount extends DurableObject{
     const input=await safeBody(req);
     if(typeof input.accessKey!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(input.accessKey))return json({error:'INVALID_KEY'},400);
     const state={tokenHash:await hexSha256(input.accessKey),name:validateName(input.name),timezone:validateTimezone(input.timezone),
-      language:validateLanguage(input.language||'hant'),times:{...DEFAULT_TIMES},notificationsEnabled:false,subscription:null,lastSent:{},createdAt:new Date().toISOString()};
+      language:validateLanguage(input.language||'hant'),times:{...DEFAULT_TIMES},slots:legacySlots(DEFAULT_TIMES),notificationsEnabled:false,subscription:null,lastSent:{},createdAt:new Date().toISOString()};
     await this.ctx.storage.put('state',state);
     return json({account:this.publicAccount(state)},201);
    }
@@ -91,11 +89,19 @@ export class BirdAccount extends DurableObject{
     if(Object.hasOwn(input,'timezone'))state.timezone=validateTimezone(input.timezone);
     if(Object.hasOwn(input,'language'))state.language=validateLanguage(input.language);
     if(Object.hasOwn(input,'times')){
+      // Legacy clients may still update morning/evening. Keep other slots intact.
       if(!input.times||typeof input.times!=='object'||Array.isArray(input.times))return json({error:'INVALID_TIMES'},400);
-      for(const id of SLOT_IDS)if(Object.hasOwn(input.times,id)){
-        if(!VALID_TIME.test(input.times[id]))return json({error:'INVALID_TIME'},400);
-        state.times[id]=input.times[id];
+      for(const id of ['morning','evening'])if(Object.hasOwn(input.times,id)){
+        if(typeof input.times[id]!=='string'||!VALID_TIME.test(input.times[id]))return json({error:'INVALID_TIME'},400);
+        state.times={...DEFAULT_TIMES,...state.times,[id]:input.times[id]};
+        if(Array.isArray(state.slots)&&state.slots.some(slot=>slot.id===id))
+          state.slots=validateSlots(state.slots.map(slot=>slot.id===id?{...slot,time:input.times[id]}:slot));
       }
+    }
+    if(Object.hasOwn(input,'slots')){
+      state.slots=validateSlots(input.slots);
+      state.times={...DEFAULT_TIMES,...state.times};
+      for(const slot of state.slots)if(slot.id==='morning'||slot.id==='evening')state.times[slot.id]=slot.time;
     }
     if(Object.hasOwn(input,'notificationsEnabled')){
       if(typeof input.notificationsEnabled!=='boolean')return json({error:'INVALID_ENABLED'},400);
@@ -112,7 +118,7 @@ export class BirdAccount extends DurableObject{
    if(path==='/feed'&&method==='PUT'){
     const body=await safeBody(req);
     const date=body.date||localComponents(Date.now(),state.timezone).date;
-    if(!validDate(date)||!SLOT_IDS.includes(body.slot)||typeof body.done!=='boolean')return json({error:'INVALID_FEED'},400);
+    if(!validDate(date)||typeof body.slot!=='string'||!SLOT_ID.test(body.slot)||typeof body.done!=='boolean')return json({error:'INVALID_FEED'},400);
     const key='feed:'+date,record=await this.ctx.storage.get(key)||{};
     if(body.done&&!record[body.slot]){
       // Preserve the real check-in time even when the device was offline.
@@ -155,7 +161,7 @@ export class BirdAccount extends DurableObject{
    return json({error:/^INVALID_|^PAYLOAD_TOO_LARGE/.test(message)?message:'INTERNAL_ERROR'},/^INVALID_|^PAYLOAD_TOO_LARGE/.test(message)?400:500);
   }
  }
- publicAccount(s){return {name:s.name,timezone:s.timezone,language:s.language||'hant',times:s.times,notificationsEnabled:s.notificationsEnabled,subscriptionActive:!!s.subscription,createdAt:s.createdAt}}
+ publicAccount(s){return {name:s.name,timezone:s.timezone,language:s.language||'hant',slots:currentSlots(s),times:s.times,notificationsEnabled:s.notificationsEnabled,subscriptionActive:!!s.subscription,createdAt:s.createdAt}}
  async scheduleNext(state){
    const when=nextDue(state);
    if(when)await this.ctx.storage.setAlarm(when);
@@ -165,15 +171,16 @@ export class BirdAccount extends DurableObject{
   const state=await this.ctx.storage.get('state');if(!state)return;
   const now=Date.now(),today=localComponents(now,state.timezone).date;
   if(state.notificationsEnabled&&state.subscription){
-   for(const id of SLOT_IDS){
-    const scheduled=localToEpoch(today,state.times[id],state.timezone);
+   for(const slot of currentSlots(state)){
+    const id=slot.id;
+    const scheduled=localToEpoch(today,slot.time,state.timezone);
     if(scheduled===null||now<scheduled||now-scheduled>120*60000)continue;
     const mark=today+':'+id;
     if(state.lastSent[mark])continue;
     const feed=await this.ctx.storage.get('feed:'+today)||{};
     if(feed[id])continue;
     const hans=state.language==='hans';
-    const label=id==='morning'?'早上':'晚上';
+    const label='第'+(currentSlots(state).findIndex(s=>s.id===id)+1)+(hans?'餐':'餐');
     const title=state.name+(hans?' · 喂食提醒':' · 餵食提醒');
     const message=label+(hans?'时间到了，记得检查饲料和清水。':'時間到了，記得確認飼料與清水。');
     try{

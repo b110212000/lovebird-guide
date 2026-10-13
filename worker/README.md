@@ -140,3 +140,26 @@ Worker 的瀏覽器 CORS 限定 `https://b110212000.github.io`，但**CORS 不�
 - 簡體時送出「喂食提醒／时间到了，记得检查饲料和清水」。
 - 舊帳戶沒有 `language` 欄位時以繁體相容，不需要重新註冊。
 - 初版每個帳戶只有單一推播訂閱，所以**通知語言跟隨帳戶最後同步的語言**，不是依所有裝置分別設定；若未來支援同帳戶多裝置通知需改為訂閱層級儲存語言。
+
+## v2.6.0 可增減餵食時段 API
+
+`PATCH /api/account` 現在支援 **`slots` 完整列表**：
+
+```json
+{
+  "slots": [
+    {"id":"morning","time":"08:00"},
+    {"id":"meal-0123456789abcdef0123456789abcdef","time":"12:30"},
+    {"id":"evening","time":"18:00"}
+  ]
+}
+```
+
+- 每位帳戶可自行使用 1～12 個時段，時段 ID 只能為 `morning`／`evening` 或 `meal-` 加 32 位十六進位識別碼；24 小時制 `HH:mm`、同帳戶 ID 不可重複。
+- 既有帳戶無 `slots` 時讀取原 `times` 作為早晚時段；舊版 `PATCH times` 僅更新既有舊時段，不會清除額外餐次。
+- `GET /api/state` 的 `account.slots` 提供排序後的時段列表；`PUT /api/feed` 的 `slot` 可傳新 ID，完成時間 `completedAt` 行為不變。
+- 刪除時段會停止該時段未來排程，不會刪除過去的 `feed:YYYY-MM-DD` 紀錄。歷史紀錄仍可查詢所有曾使用的時段。
+- Durable Object Alarm 依各時段分別計算當地日期時間與 DST，推播文案依帳戶的簡／繁語言設定顯示「第 N 餐」；每個時段每日最多一次成功發送。
+- 勿自行設定具體幼鳥灌食頻率：餵食間隔與方式應由鳥類獸醫依狀況決定。
+
+**發布確認：** GitHub Actions 前端／Worker dry-run 成功後，還要在 Cloudflare Dashboard 確認 Workers Builds 已部署至正式環境，並以 iPhone 主畫面 PWA 測試背景通知。未驗證之前不可宣稱推播實機成功。

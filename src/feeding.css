@@ -28,3 +28,15 @@
 .feeding-history-row strong{font-size:15px}.feeding-history-row span,.feeding-history p{font-size:14px;color:#647a67;line-height:1.6;margin:0}
 .cloud-history-row{align-items:flex-start}.cloud-history-feed{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.cloud-history-feed small{font-size:13px;color:#708472}
 @media(max-width:420px){.feeding-summary{padding:15px}.feeding-summary p{font-size:14px}.feeding-card{padding:14px}.feeding-time-line input{width:124px;font-size:17px}}
+
+/* v2.6.0: dynamic meal schedule editor */
+.feeding-card-top .feeding-heading{flex:1}
+.feeding-remove{min-width:34px;min-height:34px;border:1px solid #e2e8e2;background:#f8faf7;color:#7a857b;border-radius:11px;font-size:15px;font-weight:700;display:grid;place-items:center;flex:none}
+.feeding-remove:hover{background:#ffecea;color:#b35050;border-color:#f0c7c1}
+.feeding-add{display:flex;gap:12px;align-items:end;border:1px dashed #a5c4a8;border-radius:17px;padding:14px;background:#f8fbf6;flex-wrap:wrap}
+.feeding-add label{display:flex;flex-direction:column;gap:6px;flex:1;min-width:128px;font-size:14px;font-weight:750;color:#59745b}
+.feeding-add input{width:100%;min-height:45px;background:white;border:1px solid #d4e3d0;border-radius:12px;color:#416e46;padding:8px 12px;font-size:17px}
+.feeding-add button{flex:1;min-width:160px;min-height:46px;padding:10px;border:0;border-radius:12px;background:#407d4c;color:white;font-size:15px;font-weight:850}
+.feeding-add button:disabled{background:#c4d2c3;cursor:not-allowed}
+.time-setting>.feeding-remove{margin-left:5px}
+@media(max-width:400px){.feeding-add{align-items:stretch}.feeding-add button{width:100%}}

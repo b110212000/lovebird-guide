@@ -1,4 +1,4 @@
-# 香蕉的养鸟手册 · React v2.5.1
+# 香蕉的养鸟手册 · React v2.6.0
 
 免费 iPhone PWA，部署在 GitHub Pages：
 https://b110212000.github.io/lovebird-guide/
@@ -11,7 +11,7 @@ https://b110212000.github.io/lovebird-guide/
 - `src/styles.css` 和 `src/chrome.css`：固定标题列、独立滑动区、底部导航、全屏抽屉、Modal、Toast，参考 MLB 记分板的设计逻辑。
 - `src/index.html` 和 `src/sw.js`：GitHub Pages 静态入口和 PWA 离线缓存模板。
 - `scripts/build.mjs`：esbuild 打包。
-- `.github/workflows/build-react.yml`：main 更新源文件时安装依赖并生成正式 `index.html`、`sw.js`、`assets/app-2.5.1.js` 和 CSS。
+- `.github/workflows/build-react.yml`：main 更新源文件时安装依赖并生成正式 `index.html`、`sw.js`、`assets/app-2.6.0.js` 和 CSS。
 
 ## 主要功能
 
@@ -87,3 +87,13 @@ npm run build
 3. **最後驗證及回報**：依修改範圍檢查測試、React GitHub Actions、GitHub Pages 和 Cloudflare Workers Builds；在 Issue 記錄版本、Commit、部署與實機測試狀態。尚未完成必要驗證的 Issue 保持開啟，完成後才關閉。
 
 **禁止直接修改而不建立 Issue。** 此規則適用未來所有對本專案的改動。
+
+## v2.6.0 — 自訂每日多餐時段（[Issue #2](https://github.com/b110212000/lovebird-guide/issues/2)）
+
+- 原先固定早／晚兩個時段，現在可在「打卡 → 餵食」直接新增、編輯、刪除餐次，上限 12 個；餐次會依時間排序，顯示為第 1 餐、第 2 餐……，每餐都有獨立預定時間、實際完成時間及提醒狀態。
+- 「設定 → 餵食提醒」也能管理所有時段；匯出的 iPhone 行事曆 ICS 現在包含所有時段。**舊有 ICS 行事曆事件不會自動修改或刪除**，調整餐次後需要手動清除舊事件並重新匯入。
+- 首次開啟自動從既有 `ylg-feed-schedule-v1` 遷移至 `ylg-feed-slots-v2`，保留原先 `morning` / `evening` 固定 ID 與歷史打卡。新時段使用獨立 UUID，刪除時段後仍保留已產生的歷史打卡。
+- 當天餵食進度和首頁圓環依實際時段數計算，原有每日六項照顧清單不變。
+- Cloudflare `PATCH /api/account` 支援 `slots: [{id,time}]`，存於使用者自己的 Durable Object；各時段獨立 Alarm、Web Push 和打卡歷史。舊有帳戶沒有 slots 時從 times 自動讀取，`PATCH times` 保留舊版客戶端相容性。
+- 新增前端與 Worker 排程驗證測試，App `v2.6.0`、Worker API `0.2.0`。
+- **餵食頻率需按鳥兒年齡、斷奶與健康狀態，遵循鳥類獸醫或有經驗的合格專業者指引。** App 不假設幼鳥／成鳥每天只能吃兩次。
