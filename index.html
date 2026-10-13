@@ -564,7 +564,7 @@ function updateAppNav(scroll){
   });
   const heading=document.getElementById('appHeaderSubtitle');
   const labels=UI[lang];
-  const names={home:APP_LANG[lang].home,guide:APP_LANG[lang].guide,growth:APP_LANG[lang].growth,journal:APP_LANG[lang].journal,more:APP_LANG[lang].more,install:INSTALL_TEXT[lang].title,arrival:labels.navArrival,food:labels.navFood,behavior:labels.navBehavior,environment:labels.navEnvironment,health:labels.navHealth,knowledge:labels.navKnowledge};
+  const names={home:APP_LANG[lang].home,guide:APP_LANG[lang].guide,growth:APP_LANG[lang].growth,journal:APP_LANG[lang].journal,more:APP_LANG[lang].more,install:(lang==='hant'?'iPhone 安裝教學':'iPhone 安装教程'),arrival:labels.navArrival,food:labels.navFood,behavior:labels.navBehavior,environment:labels.navEnvironment,health:labels.navHealth,knowledge:labels.navKnowledge};
   if(heading)heading.textContent=names[page];
   if(scroll){window.scrollTo({top:0,behavior:'instant'});closeNav();}
 }
