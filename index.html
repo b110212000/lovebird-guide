@@ -25,7 +25,7 @@
 /* Keep ornamental hero shapes from causing sideways scrolling on narrow screens. */
 .hero-art{overflow:clip}
 
-/* v1.1.0 — iPhone PWA safe-area + backup/update controls */
+/* v2.0.0 — iPhone PWA safe-area + backup/update controls */
 .topbar{padding-top:env(safe-area-inset-top);height:calc(70px + env(safe-area-inset-top))}
 .sidebar{padding-top:max(30px,env(safe-area-inset-top));padding-bottom:max(22px,env(safe-area-inset-bottom))}
 .page-inner{padding-bottom:calc(22px + env(safe-area-inset-bottom))}
@@ -42,11 +42,96 @@
 .pwa-update button{background:#f6da7e;color:#3c432c;border:0;border-radius:9px;padding:10px 12px;white-space:nowrap;font-size:12px;font-weight:750}
 @media(max-width:600px){.pwa-backup{padding:15px}.pwa-update{font-size:11px}}
 
+
+/* v2.0.0 iPhone-first app interface - larger type, safe areas, tab navigation */
+:root{--app-bg:#fff8e9;--app-ink:#29312a;--app-muted:#647168;--app-yellow:#ffcf55;--app-outline:#eee8d9;--app-green:#42694f;--app-radius:24px}
+html{scroll-behavior:auto;scroll-padding-top:110px}
+body{background:linear-gradient(180deg,#fff9e9 0%,#f5f8f0 60%,#fff9e9 100%);color:var(--app-ink);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%;overflow-x:clip}
+button,a,input,textarea{touch-action:manipulation}button{min-height:44px}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #e9a926;outline-offset:3px}
+.site-shell{display:block;min-height:100vh}.main-content{margin:0;min-width:0;max-width:1000px;margin-inline:auto}
+.page-inner{max-width:100%;padding:16px 24px calc(130px + env(safe-area-inset-bottom))}
+.sidebar{width:min(340px,88vw);flex:none;position:fixed;inset:0 auto 0 0;transform:translateX(-105%);transition:transform .25s ease;box-shadow:12px 0 45px #3b3b2333;background:#fffcf4;border-color:#f4e8cd;padding:calc(28px + env(safe-area-inset-top)) 18px 24px;z-index:80}
+.sidebar.open{transform:translateX(0)}.sidebar .brand{margin:0 8px 25px}.brand strong{font-size:19px}.brand small{font-size:11px}.side-caption{font-size:13px}.nav-link{font-size:17px;min-height:48px}.nav-link>span:first-child{font-size:21px}.sidebar-note{font-size:15px;background:#fff5d9;color:#6d715b}.language-btn{font-size:16px;padding:12px 0}.side-version{font-size:13px}
+.mobile-overlay.show{z-index:75;background:#151b174b}
+.topbar{z-index:35;position:sticky;top:0;height:auto;min-height:70px;padding:max(12px,env(safe-area-inset-top)) 24px 12px;background:#fff9eef2;backdrop-filter:blur(18px);border-color:var(--app-outline);box-shadow:0 4px 18px #b9a67818}
+.app-top-info{display:flex;align-items:center;gap:11px;min-width:0}
+.app-top-info strong{display:block;font-size:19px;font-weight:830;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-top-info small{display:block;color:#849080;font-size:13px;font-weight:650;line-height:1.3}
+.app-header-avatar{height:44px;width:44px;flex-shrink:0;display:grid;place-items:center;background:#ffe28a;border-radius:16px;font-size:25px;box-shadow:0 3px 12px #e9ac382b}
+.top-actions{display:flex;align-items:center;gap:9px}
+.mobile-lang,.mobile-nav-toggle{display:inline-grid!important;place-items:center;background:#fff;border:1px solid var(--app-outline);border-radius:15px;box-shadow:0 3px 10px #7e6a3a10;color:#4a634f;font-size:17px;font-weight:780;height:44px;min-width:44px;padding:4px 10px}
+.mobile-nav-toggle{font-size:23px}
+.page-inner > .anchor-section:not(.is-current){display:none!important}
+.page-inner > .quick-section,.page-inner > .marquee-note,.page-inner > .app-actions,.page-inner > .page-footer{display:none!important}
+.site-shell[data-page="home"] .page-inner > .quick-section{display:block!important}
+.site-shell[data-page="home"] .page-inner > .marquee-note{display:flex!important}
+.site-shell[data-page="home"] .page-inner > .app-actions{display:grid!important}
+.site-shell[data-page="more"] .page-inner > .page-footer{display:flex!important}
+.app-greeting{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:4px 0 15px;font-size:14px;color:#7a877b}
+.app-greeting-pill{padding:7px 12px;background:#eaf3e6;color:#497651;font-size:13px;letter-spacing:.05em;border-radius:30px;font-weight:800}
+.hero{min-height:unset;background:linear-gradient(125deg,#fff6d4,#fffef9 60%,#edf7e6);border:1px solid #f4e2a7;border-radius:30px;box-shadow:0 12px 32px #c1a65d18;padding:30px;gap:20px;grid-template-columns:1.08fr .92fr}
+.hero h1{font-size:clamp(34px,5vw,52px);line-height:1.25;letter-spacing:-.04em;margin:18px 0 14px}
+.hero-description{font-size:19px;line-height:1.8;color:#667166;max-width:520px}
+.eyebrow{font-size:12px;padding:9px 14px;background:#fff0a9;color:#9a7121}
+.hero-cta{margin:24px 0;gap:11px;flex-wrap:wrap}
+.primary-button{font-size:17px;min-height:50px;border-radius:16px;padding:13px 19px;background:#46774d;box-shadow:0 7px 16px #416e4636}
+.plain-button{font-size:16px;min-height:50px;display:inline-flex;align-items:center}
+.hero-meta{flex-wrap:wrap;gap:8px}.hero-meta>div{padding:0 12px;border:0;min-width:95px}.hero-meta strong{font-size:23px}.hero-meta span{font-size:13px}
+.hero-art{min-height:300px;overflow:clip}.bird-photo{width:min(100%,310px);border-radius:26px;padding:9px;background:white;box-shadow:0 12px 40px #8b702a20}
+.bird-photo>img{height:260px;object-fit:cover;border-radius:20px}.photo-caption{font-size:12px;line-height:1.5;padding:7px}
+.marquee-note{display:none;align-items:center;gap:15px;border:1px solid #eddfb5;border-radius:22px;padding:18px 21px;background:#fff9e5;margin:18px 0}
+.marquee-note strong{font-size:18px}.marquee-note div span{font-size:15px;line-height:1.7}.note-emoji{font-size:27px}
+.app-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
+.app-actions>a{min-width:0;display:flex;align-items:center;gap:12px;padding:18px 15px;background:white;border:1px solid var(--app-outline);border-radius:22px;box-shadow:0 7px 25px #2a41260b}
+.app-action-icon{display:grid;place-items:center;width:46px;height:46px;background:#fff2ca;border-radius:16px;font-size:25px;flex:none}
+.app-actions strong{display:block;font-size:17px}.app-actions small{display:block;font-size:13px;color:#7c877b;line-height:1.5}.app-chevron{font-size:26px;color:#b3baaa;margin-left:auto}
+.section-block{margin:0 0 22px;background:white;border:1px solid var(--app-outline);border-radius:27px;padding:25px;box-shadow:0 8px 30px #4d694312}
+.section-topline{margin-bottom:10px}.section-stamp{font-size:12px}.section-index{font-size:13px}
+.section-heading{margin-bottom:21px}.section-heading h2{font-size:clamp(27px,3vw,34px);line-height:1.35}.section-heading p{font-size:17px;line-height:1.8}
+.quick-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.quick-card{background:#f9fbf5;border:1px solid #e7eee2;border-radius:22px;padding:21px;min-width:0}.quick-card h3{font-size:19px}.quick-card p{font-size:16px;line-height:1.75}.quick-icon{font-size:30px}
+.week-timeline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.week-card{border:1px solid #ebeee3;border-radius:21px;background:#fbfdf9;padding:20px}.week-card h3{font-size:19px}.week-card p,.week-card li{font-size:16px}
+.food-overview{gap:17px}.food-ring-card,.food-note,.food-column,.age-detail,.behavior-card,.environment-card,.health-card,.journal-card,.wiki-panel,.sources-block{border:1px solid #e9ede4;border-radius:23px;background:#fbfcf9}
+.food-ring-card{padding:19px}.food-ring-card p,.food-note p,.food-column li{font-size:16px;line-height:1.8}.food-note h3,.food-column .food-tag{font-size:17px}
+.food-columns{gap:15px}.food-column{padding:21px}.nutrition-donut{width:200px;height:200px}.donut-center strong{font-size:25px}
+.soft-alert,.warning-ribbon,.tip-stripe{border-radius:20px;padding:18px;gap:12px}.soft-alert p,.warning-ribbon p,.tip-stripe p{font-size:16px}
+.age-tabs{display:flex;gap:9px;padding-bottom:9px;overflow:auto}.age-tab{font-size:16px;border-radius:15px;white-space:nowrap;padding:14px 15px;min-height:48px}
+.age-detail{padding:23px;gap:18px}.age-detail h3{font-size:22px}.age-detail p,.age-detail li,.age-warning{font-size:16px}
+.behavior-grid,.environment-grid{gap:15px}.behavior-card,.environment-card{padding:21px}.behavior-card h3,.environment-card h3{font-size:19px}.behavior-card p,.environment-card p{font-size:16px}.behavior-label{font-size:14px}
+.health-grid{gap:15px}.health-card{padding:21px}.health-flag{font-size:19px}.health-card li{font-size:16px;line-height:1.8}
+.journal-layout{gap:16px}.journal-card{padding:22px}.journal-card h3{font-size:20px}.journal-card .micro{font-size:15px;line-height:1.75}.input-row label{font-size:16px}.input-row input,.note-card textarea{font-size:17px;min-height:50px;border-radius:14px}.note-card textarea{min-height:120px}.profile-output strong{font-size:22px}
+.daily-checklist{display:grid;gap:10px}.check-item{font-size:17px;line-height:1.65;border:1px solid #e5ebdf;border-radius:15px;background:white;padding:15px}.check-item input{width:21px;height:21px;margin-right:12px;accent-color:#4f8656}.check-progress strong{font-size:24px}
+.pwa-backup{border-radius:19px;padding:19px}.pwa-backup strong{font-size:19px}.pwa-backup p{font-size:16px}.pwa-backup-buttons button{font-size:16px;padding:12px 15px}
+.wiki-header h3,.sources-block h3{font-size:20px}.wiki-text,.sources-desc,.sources-block p{font-size:16px;line-height:1.85}.source-link{font-size:16px;padding:14px 12px}
+.page-footer{margin-top:20px;gap:16px;border-top:0;background:#f9fbf5;border-radius:22px;padding:23px}.page-footer strong{font-size:18px}.page-footer p,.footer-right{font-size:15px}
+.app-tabbar{position:fixed;z-index:60;bottom:calc(10px + env(safe-area-inset-bottom));left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;background:#ffffffef;border:1px solid #e7e8df;border-radius:23px;padding:8px 7px;box-shadow:0 10px 34px #39473034;backdrop-filter:blur(16px);max-width:590px;margin:0 auto}
+.app-tab{display:flex;align-items:center;flex-direction:column;gap:1px;justify-content:center;border-radius:17px;min-height:58px;font-weight:760;color:#869187;text-align:center}
+.app-tab>span{font-size:23px;line-height:1.2}.app-tab small{font-size:13px;line-height:1.4}.app-tab.active{color:#326c42;background:#e6f2e0}.app-tab:focus-visible{outline-offset:-2px}
+.app-hub-section,.app-more-screen{background:transparent;padding:8px 0 28px}
+.app-section-head{background:linear-gradient(120deg,#fff6d5,#f8ffef);border:1px solid #f1e5c3;border-radius:26px;padding:27px 25px;margin-bottom:17px}
+.app-eyebrow{display:block;color:#a47a2c;font-size:13px;font-weight:800;letter-spacing:.08em;margin-bottom:7px}
+.app-section-head h2{font-size:34px;line-height:1.3;margin:0 0 10px}.app-section-head p{font-size:17px;color:#6e7b70;margin:0}
+.app-hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.app-hub-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:9px;min-height:163px;background:#fff;padding:19px;border:1px solid #e9eee2;border-radius:22px;box-shadow:0 8px 24px #465c4111}
+.app-hub-emoji{display:grid;place-items:center;width:49px;height:49px;background:#fff2ca;border-radius:16px;font-size:28px}
+.app-hub-card strong{font-size:19px;line-height:1.4;padding-right:18px}.app-hub-card small{font-size:15px;color:#849082}.app-card-arrow{position:absolute;bottom:18px;right:18px;font-size:22px;color:#aeb9ab}
+.app-more-card{border:1px solid #e8efe3;background:white;padding:21px;border-radius:22px;margin:0 0 16px;box-shadow:0 8px 24px #465c410d}
+.app-more-item{display:flex;gap:14px;align-items:center}.app-more-icon{display:grid;place-items:center;background:#e9f4e4;font-size:28px;width:48px;height:48px;border-radius:15px}
+.app-more-item strong{display:block;font-size:20px}.app-more-item small{font-size:15px;color:#7a8a7d}
+.app-lang-pills{display:flex;gap:10px;margin-top:20px}.app-lang-pills button{border:1px solid #e4eadb;background:#f9fbf5;border-radius:14px;padding:11px 16px;font-size:16px;font-weight:800;flex:1;color:#516b54}.app-lang-pills button.active{background:#426d4e;border-color:#426d4e;color:white}
+.app-more-links{display:grid;gap:10px}.app-more-links a{display:flex;gap:14px;align-items:center;background:white;border:1px solid #e6ebe0;border-radius:17px;padding:17px 20px;min-height:65px}.app-more-links a span:first-child{font-size:24px}.app-more-links strong{font-size:18px;flex:1}.app-more-links a span:last-child{font-size:24px;color:#a9b6a4}
+.app-more-note{font-size:16px;color:#6b7c70;line-height:1.8;background:#f1f7ea;padding:18px;border-radius:18px;margin-top:18px}
+.pwa-update{z-index:99;bottom:calc(95px + env(safe-area-inset-bottom))}.pwa-update span{font-size:15px}.pwa-update button{font-size:15px}
+@media(max-width:900px){.quick-grid,.week-timeline,.food-columns,.app-actions{grid-template-columns:1fr}.app-actions>a{min-height:82px}.hero{grid-template-columns:1fr;gap:12px}.hero-art{min-height:200px}.hero-meta{justify-content:space-around}.hero h1{font-size:39px}.hero-description{font-size:18px}.page-inner{padding-inline:20px}.behavior-grid,.environment-grid,.health-grid,.journal-layout,.food-overview{grid-template-columns:1fr}}
+@media(max-width:640px){body{font-size:18px}.main-content{max-width:100%}.topbar{padding-inline:16px}.app-top-info strong{font-size:17px}.app-top-info small{font-size:12px}.app-header-avatar{width:42px;height:42px}.page-inner{padding:13px 14px calc(130px + env(safe-area-inset-bottom))}.hero{padding:22px 19px;border-radius:24px}.hero h1{font-size:35px}.hero-description{font-size:18px}.hero-cta{gap:8px}.primary-button,.plain-button{font-size:16px}.hero-art{height:auto;min-height:210px}.bird-photo{width:min(76%,280px)}.bird-photo>img{height:190px}.hero-meta>div{padding:0 5px}.hero-meta strong{font-size:21px}.hero-meta span{font-size:13px}.marquee-note{padding:17px 15px}.marquee-note>div{min-width:0}.marquee-note div span{font-size:15px}.app-actions{gap:10px;margin:14px 0}.app-actions>a{padding:15px;border-radius:18px}.section-block{padding:21px 17px;border-radius:23px}.section-heading h2{font-size:28px}.section-heading p{font-size:16px}.quick-card{padding:17px}.quick-card p{font-size:16px}.food-ring-card{display:block}.age-detail{grid-template-columns:1fr}.app-hub-grid{grid-template-columns:1fr 1fr;gap:10px}.app-hub-card{min-height:169px;padding:14px}.app-hub-card strong{font-size:17px}.app-hub-card small{font-size:14px}.app-hub-emoji{width:44px;height:44px}.app-section-head{padding:21px}.app-section-head h2{font-size:29px}.app-tabbar{border-radius:20px;bottom:calc(8px + env(safe-area-inset-bottom))}.app-tab{min-height:56px}.app-tab>span{font-size:22px}.app-tab small{font-size:12px}.wiki-header{gap:11px}.wiki-panel,.sources-block{padding:18px}.app-more-item strong{font-size:18px}}
+@media(max-width:365px){.app-top-info strong{font-size:15px}.mobile-lang,.mobile-nav-toggle{min-width:40px;padding:4px 8px}.app-tab small{font-size:11px}.app-hub-grid{grid-template-columns:1fr}.app-hub-card{min-height:118px}.app-tabbar{gap:0}}
+@media(prefers-reduced-motion:reduce){.app-tab,.app-hub-card{transition:none}}
+
 </style>
   
 </head>
 <body>
-  <div class="site-shell">
+  <div class="site-shell" data-page="home">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#home" aria-label="Home"><span class="brand-mark">🐤</span><span><strong data-i18n="brand">香蕉的生活手冊</strong><small>THE LITTLE LOVEBIRD</small></span></a>
       <div class="side-caption" data-i18n="navCaption">新手照顧路線圖</div>
@@ -68,18 +153,19 @@
           <button type="button" class="language-btn selected" id="langHant" aria-pressed="true">繁體</button>
           <button type="button" class="language-btn" id="langHans" aria-pressed="false">简体</button>
         </div>
-        <span class="side-version">v1.1.0 · GitHub Pages Ready</span>
+        <span class="side-version">v2.0.0 · GitHub Pages Ready</span>
       </div>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div class="breadcrumb"><span class="crumb-dot"></span><span data-i18n="breadcrumb">LOVEBIRD CARE / 新手照顧指南</span></div>
-        <div class="top-actions"><span class="offline-label"><span class="tiny-dot"></span><span data-i18n="offlineInfo">核心內容離線可讀*</span></span><button type="button" class="mobile-lang" id="mobileLang" aria-label="切換語言">繁 / 简</button><button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-controls="sidebar" aria-expanded="false" aria-label="開啟選單">☰</button></div>
+        <div class="app-top-info"><span class="app-header-avatar" aria-hidden="true">🐤</span><span><strong data-i18n="brand">香蕉的生活手冊</strong><small id="appHeaderSubtitle">养鸟首页</small></span></div>
+        <div class="top-actions"><button type="button" class="mobile-lang" id="mobileLang" aria-label="切換語言" title="繁體 / 简体">文/A</button><button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-controls="sidebar" aria-expanded="false" aria-label="開啟選單">☰</button></div>
       </header>
 
       <div class="page-inner">
-        <section id="home" class="hero anchor-section">
+        <div class="app-greeting"><span class="app-greeting-pill">🐣 BANANA CARE</span><span id="appGreetingDate"></span></div>
+        <section id="home" class="hero anchor-section is-current">
           <div class="hero-copy">
             <div class="eyebrow"><span>✳</span> <span data-i18n="heroBadge">FOR FIRST-TIME BIRD PARENTS</span></div>
             <h1 data-i18n-html="heroTitle">香蕉回家了！<br><em>一起學著好好照顧牠。</em></h1>
@@ -95,9 +181,26 @@
 
         <div class="marquee-note"><span class="note-emoji">🟡</span><div><strong data-i18n="identityTitle">先認識你家的「黃色牡丹」</strong><span data-i18n="identityCopy">黃色通常是羽色描述，可能來自不同牡丹鸚鵡物種或色系；請向原飼主確認學名、出生日期及是否已自行進食。</span></div><a href="#knowledge" aria-label="Learn more">↗</a></div>
 
+        <div class="app-actions">
+    <a href="#journal"><span class="app-action-icon">✅</span><span><strong id="actionChecklist">今日打卡</strong><small id="actionChecklistDesc">喝水、喂食、观察状态</small></span><span class="app-chevron">›</span></a>
+    <a href="#guide"><span class="app-action-icon">📖</span><span><strong id="actionGuide">养鸟小课堂</strong><small id="actionGuideDesc">新手重点随时查看</small></span><span class="app-chevron">›</span></a>
+    <a href="#growth"><span class="app-action-icon">📆</span><span><strong id="actionAge">月龄成长</strong><small id="actionAgeDesc">不同年龄照顾重点</small></span><span class="app-chevron">›</span></a>
+  </div>
         <section class="section-block quick-section" aria-label="開始之前"><div class="section-topline"><span class="section-index">01 — <span data-i18n="firstEssentials">開始之前</span></span><span class="section-stamp" data-i18n="essentialsStamp">KEEP THESE IN MIND</span></div><div class="section-heading"><h2 data-i18n="essentialsTitle">先記住這 <em>3 件事</em></h2><p data-i18n="essentialsSubtitle">所有照顧都從安全、觀察和耐心開始。</p></div>
           <div class="quick-grid" id="quickGrid"></div>
         </section>
+
+<section id="guide" class="anchor-section app-hub-section">
+  <div class="app-section-head"><span class="app-eyebrow">YOUR CARE GUIDE</span><h2 id="guideHubTitle">新手养鸟攻略</h2><p id="guideHubSubtitle">从刚接回家到每天喂养，想了解什么就点进去看。</p></div>
+  <div class="app-hub-grid">
+    <a href="#arrival" class="app-hub-card"><span class="app-hub-emoji">🪺</span><strong data-i18n="navArrival">剛到家的第一週</strong><small id="hubArrival">第一周怎么相处</small><span class="app-card-arrow">↗</span></a>
+    <a href="#food" class="app-hub-card"><span class="app-hub-emoji">🥬</span><strong data-i18n="navFood">飲食與禁忌</strong><small id="hubFood">吃什么 · 不能吃什么</small><span class="app-card-arrow">↗</span></a>
+    <a href="#behavior" class="app-hub-card"><span class="app-hub-emoji">💛</span><strong data-i18n="navBehavior">行為與互動</strong><small id="hubBehavior">看懂香蕉的小动作</small><span class="app-card-arrow">↗</span></a>
+    <a href="#environment" class="app-hub-card"><span class="app-hub-emoji">🏡</span><strong data-i18n="navEnvironment">居家環境安全</strong><small id="hubHome">鸟笼 · 睡眠 · 放飞</small><span class="app-card-arrow">↗</span></a>
+    <a href="#health" class="app-hub-card"><span class="app-hub-emoji">🩺</span><strong data-i18n="navHealth">健康警示</strong><small id="hubHealth">哪些情况要看兽医</small><span class="app-card-arrow">↗</span></a>
+    <a href="#knowledge" class="app-hub-card"><span class="app-hub-emoji">📚</span><strong data-i18n="navKnowledge">百科與參考資料</strong><small id="hubWiki">百科资料和参考来源</small><span class="app-card-arrow">↗</span></a>
+  </div>
+</section>
 
         <section id="arrival" class="section-block anchor-section"><div class="section-topline"><span class="section-index">02 — <span data-i18n="arrivalSmall">剛到家</span></span><span class="section-stamp" data-i18n="arrivalStamp">THE FIRST SEVEN DAYS</span></div><div class="section-heading"><h2 data-i18n="arrivalTitle">新家第一週，<em>慢一點比較快</em></h2><p data-i18n="arrivalSubtitle">先建立安全感，再慢慢認識彼此。不追趕、不硬抓、不強迫上手。</p></div>
           <div class="week-timeline" id="weekTimeline"></div><div class="soft-alert"><span>ⓘ</span><p data-i18n="arrivalAlert">剛到家安靜不代表沒事。每天都要確認牠真的有吃下食物、排便正常；若持續不吃、虛弱或呼吸異常，儘速聯繫鳥類獸醫。</p></div>
@@ -141,14 +244,36 @@
           <div class="sources-block"><h3 data-i18n="sourcesTitle">參考來源 · Reference library</h3><p data-i18n="sourcesDesc">下列是網站飼養資訊的主要參考資料。內容經整理為新手閱讀版本，不是個別診療建議。</p><div class="sources-list" id="sourcesList"></div><p class="photo-credit"><span data-i18n="imageCredit">封面照片：Roel Balingit，Wikimedia Commons，CC BY-SA 4.0。</span> <a href="https://commons.wikimedia.org/wiki/File:Peach_faced_lutino_African_lovebird.jpg" target="_blank" rel="noopener noreferrer" data-i18n="viewLicense">查看原圖與授權 ↗</a></p></div>
         </section>
 
-        <footer class="page-footer"><div><span class="footer-flower">🐤</span><strong data-i18n="footerBrand">香蕉的生活手冊</strong><p data-i18n="footerMessage">一份給第一次養牡丹鸚鵡的你，溫柔但認真的照顧筆記。</p></div><div class="footer-right"><span>v1.1.0 · 2026</span><span data-i18n="footerDisclaimer">僅供衛教參考，不能取代鳥類獸醫。</span><a href="#home" data-i18n="backTop">回到頂端 ↑</a></div></footer>
+<section id="more" class="anchor-section app-more-screen">
+  <div class="app-section-head"><span class="app-eyebrow">MORE & SETTINGS</span><h2 id="moreTitle">更多与设置</h2><p id="moreSubtitle">语言、百科、健康提示与资料备份。</p></div>
+  <div class="app-more-card">
+    <div class="app-more-item"><span class="app-more-icon">🌐</span><span><strong id="moreLanguageTitle">显示语言</strong><small id="moreLanguageDesc">可以随时切换简体或繁体</small></span></div>
+    <div class="app-lang-pills"><button type="button" data-app-lang="hans">简体中文</button><button type="button" data-app-lang="hant">繁體中文</button></div>
+  </div>
+  <div class="app-more-links">
+    <a href="#health"><span>🩺</span><strong data-i18n="navHealth">健康警示</strong><span>›</span></a>
+    <a href="#knowledge"><span>📚</span><strong data-i18n="navKnowledge">百科與參考資料</strong><span>›</span></a>
+    <a href="#environment"><span>🏡</span><strong data-i18n="navEnvironment">居家環境安全</strong><span>›</span></a>
+    <a href="#journal"><span>💾</span><strong id="moreBackup">照顾记录与备份</strong><span>›</span></a>
+  </div>
+  <p id="moreOfflineNote" class="app-more-note">🔒 打卡与日记保存在此设备。换手机或重装 App 前，请先前往每日打卡页面导出备份。</p>
+</section>
+
+        <footer class="page-footer"><div><span class="footer-flower">🐤</span><strong data-i18n="footerBrand">香蕉的生活手冊</strong><p data-i18n="footerMessage">一份給第一次養牡丹鸚鵡的你，溫柔但認真的照顧筆記。</p></div><div class="footer-right"><span>v2.0.0 · 2026</span><span data-i18n="footerDisclaimer">僅供衛教參考，不能取代鳥類獸醫。</span><a href="#home" data-i18n="backTop">回到頂端 ↑</a></div></footer>
       </div>
     </main>
+    <nav class="app-tabbar" aria-label="主要分頁">
+      <a class="app-tab active" data-app-tab="home" href="#home" aria-current="page"><span aria-hidden="true">🏠</span><small id="tabHome">首页</small></a>
+      <a class="app-tab" data-app-tab="guide" href="#guide"><span aria-hidden="true">📖</span><small id="tabGuide">指南</small></a>
+      <a class="app-tab" data-app-tab="growth" href="#growth"><span aria-hidden="true">🌱</span><small id="tabGrowth">月龄</small></a>
+      <a class="app-tab" data-app-tab="journal" href="#journal"><span aria-hidden="true">✅</span><small id="tabJournal">打卡</small></a>
+      <a class="app-tab" data-app-tab="more" href="#more"><span aria-hidden="true">⚙️</span><small id="tabMore">更多</small></a>
+  </nav>
   </div>
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="pwa-update" id="pwaUpdate" hidden role="status"><span id="pwaUpdateText"></span><button type="button" id="pwaReload"></button></div>
 <script>
-/* Yellow Lovebird Guide v1.1.0 — vanilla JS, GitHub Pages ready. */
+/* Yellow Lovebird Guide v2.0.0 — vanilla JS, GitHub Pages ready. */
 'use strict';
 const LANGS = ['hant', 'hans'];
 const UI = {
@@ -329,6 +454,47 @@ if('serviceWorker' in navigator){
 }
 document.documentElement.dataset.pwaReady='true';
 drawPwaLabels();
+
+
+/* v2.0.0: App-style screen navigation while preserving existing guide and local records. */
+const APP_PAGES=['home','guide','arrival','food','growth','behavior','environment','health','journal','knowledge','more'];
+const APP_LANG={
+hans:{home:'首页',guide:'指南',growth:'月龄',journal:'打卡',more:'更多',hubTitle:'新手养鸟攻略',hubSub:'从刚接回家到每天喂养，想了解什么就点进去看。',moreTitle:'更多与设置',moreSub:'语言、百科、健康提示与记录备份。',language:'显示语言',languageDesc:'可以随时切换简体或繁体',backup:'照顾记录与备份',offline:'🔒 打卡和日记保存在这台设备里。换手机或重装 App 前，请先到每日打卡导出备份。',arrival:'第一周怎么相处',food:'吃什么 · 不能吃什么',behavior:'看懂香蕉的小动作',environment:'鸟笼 · 睡眠 · 出笼',health:'哪些情况要找兽医',wiki:'百科资料和参考来源',actionChecklist:'今日打卡',actionChecklistDesc:'饮水、喂食、观察状态',actionGuide:'养鸟小课堂',actionGuideDesc:'新手重点随时查看',actionAge:'月龄成长',actionAgeDesc:'不同年龄的照顾重点',date:'zh-CN'},
+hant:{home:'首頁',guide:'指南',growth:'月齡',journal:'打卡',more:'更多',hubTitle:'新手養鳥指南',hubSub:'從剛到家到每天餵食，想了解什麼就點進去看。',moreTitle:'更多與設定',moreSub:'語言、百科、健康提醒與紀錄備份。',language:'顯示語言',languageDesc:'可以隨時切換繁體或簡體',backup:'照顧紀錄與備份',offline:'🔒 打卡與日誌儲存在這台裝置。換手機或重新安裝 App 前，請先至每日打卡匯出備份。',arrival:'第一週如何相處',food:'吃什麼 · 不能吃什麼',behavior:'看懂香蕉的小動作',environment:'鳥籠 · 睡眠 · 放風',health:'哪些情況要找獸醫',wiki:'百科資料與參考來源',actionChecklist:'今日打卡',actionChecklistDesc:'飲水、餵食、觀察狀態',actionGuide:'養鳥小教室',actionGuideDesc:'新手重點隨時查看',actionAge:'月齡成長',actionAgeDesc:'不同年齡的照顧重點',date:'zh-TW'}
+};
+const APP_FIELDS={tabHome:'home',tabGuide:'guide',tabGrowth:'growth',tabJournal:'journal',tabMore:'more',guideHubTitle:'hubTitle',guideHubSubtitle:'hubSub',moreTitle:'moreTitle',moreSubtitle:'moreSub',moreLanguageTitle:'language',moreLanguageDesc:'languageDesc',moreBackup:'backup',moreOfflineNote:'offline',hubArrival:'arrival',hubFood:'food',hubBehavior:'behavior',hubHome:'environment',hubHealth:'health',hubWiki:'wiki',actionChecklist:'actionChecklist',actionChecklistDesc:'actionChecklistDesc',actionGuide:'actionGuide',actionGuideDesc:'actionGuideDesc',actionAge:'actionAge',actionAgeDesc:'actionAgeDesc'};
+function updateAppLabels(){
+  const t=APP_LANG[lang];
+  for(const [id,key] of Object.entries(APP_FIELDS)){const node=document.getElementById(id);if(node)node.textContent=t[key];}
+  const tag=document.getElementById('appGreetingDate');
+  if(tag)tag.textContent=new Intl.DateTimeFormat(t.date,{month:'long',day:'numeric',weekday:'short'}).format(new Date());
+  document.querySelectorAll('[data-app-lang]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.appLang===lang);btn.setAttribute('aria-pressed',String(btn.dataset.appLang===lang));});
+  updateAppNav(false);
+}
+function appNavGroup(page){if(page==='growth')return 'growth';if(page==='journal')return 'journal';if(page==='more'||page==='health'||page==='knowledge')return 'more';if(page==='home')return 'home';return 'guide';}
+function updateAppNav(scroll){
+  const raw=location.hash.slice(1);
+  const page=APP_PAGES.includes(raw)?raw:'home';
+  const group=appNavGroup(page),shell=document.querySelector('.site-shell');
+  shell.dataset.page=page;
+  document.querySelectorAll('.page-inner > .anchor-section').forEach(section=>section.classList.toggle('is-current',section.id===page));
+  document.querySelectorAll('[data-app-tab]').forEach(link=>{
+    const active=link.dataset.appTab===group;
+    link.classList.toggle('active',active);
+    if(active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+  });
+  const heading=document.getElementById('appHeaderSubtitle');
+  const labels=UI[lang];
+  const names={home:APP_LANG[lang].home,guide:APP_LANG[lang].guide,growth:APP_LANG[lang].growth,journal:APP_LANG[lang].journal,more:APP_LANG[lang].more,arrival:labels.navArrival,food:labels.navFood,behavior:labels.navBehavior,environment:labels.navEnvironment,health:labels.navHealth,knowledge:labels.navKnowledge};
+  if(heading)heading.textContent=names[page];
+  if(scroll){window.scrollTo({top:0,behavior:'instant'});closeNav();}
+}
+window.addEventListener('hashchange',()=>updateAppNav(true));
+document.querySelectorAll('.app-tab').forEach(tab=>tab.addEventListener('click',()=>{if(location.hash.slice(1)===tab.dataset.appTab)updateAppNav(true);}));
+document.querySelectorAll('[data-app-lang]').forEach(btn=>btn.addEventListener('click',()=>{setLang(btn.dataset.appLang);updateAppLabels();}));
+for(const id of ['langHant','langHans','mobileLang'])document.getElementById(id).addEventListener('click',()=>updateAppLabels());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateAppLabels();});
+updateAppLabels();
 
 </script>
 </body>

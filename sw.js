@@ -1,6 +1,6 @@
-/* 香蕉养鸟 PWA service worker · v1.1.0 */
+/* 香蕉养鸟 PWA service worker · v2.0.0 */
 'use strict';
-const CACHE_NAME='banana-care-v1.1.0';
+const CACHE_NAME='banana-care-v2.0.0';
 const PREFIX='banana-care-';
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/banana.svg',
   './icons/banana-180.png','./icons/banana-192.png','./icons/banana-512.png'];
