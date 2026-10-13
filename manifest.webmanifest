@@ -1,0 +1,33 @@
+{
+  "name": "香蕉的养鸟手册｜牡丹鹦鹉新手饲养指南",
+  "short_name": "香蕉养鸟",
+  "description": "香蕉的牡丹鹦鹉照顾指南、月龄提醒与每日打卡",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "display": "standalone",
+  "background_color": "#f8f9f4",
+  "theme_color": "#f8f9f4",
+  "icons": [
+    {
+      "src": "./icons/banana-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/banana-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/banana.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
